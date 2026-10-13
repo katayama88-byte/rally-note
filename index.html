@@ -4,7 +4,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@500;600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap">
 <style>
-/* Layout: "SCOREBOARD" white (案C白, V29; mobile hardening V33; standalone web V34; name/team suggestions V35; 21-point option V36; 21pt cap 30 V37) — white ground, flat light-grey cards, rounded-rect controls; bright teal (A / primary) and bright pink (B) from the club logo; score mode = two deep-tinted panels with numbers in logo teal / deep pink. The printed sheet stays white paper. */
+/* Layout: "SCOREBOARD" white (案C白, V29; mobile hardening V33; standalone web V34; name/team suggestions V35; 21-point option V36; 21pt cap 30 V37; wordmark fits CTA width V38) — white ground, flat light-grey cards, rounded-rect controls; bright teal (A / primary) and bright pink (B) from the club logo; score mode = two deep-tinted panels with numbers in logo teal / deep pink. The printed sheet stays white paper. */
 :root{
   --bg:#FFFFFF; --surface:#F1F6F6; --field:#FFFFFF; --ink:#142625; --muted:#5E7372; --line:#DCE7E6;
   --teal:#058687; --on-teal:#FFFFFF; --teal-tint:#DCEEEE; --teal-ink:#046A6B;
@@ -38,7 +38,7 @@ h2.sec{white-space:nowrap;font-size:15px;font-weight:700;margin:0;color:var(--in
 .fine{font-size:13px;color:var(--muted);margin:0;line-height:1.7}
 
 /* hero */
-.hero{display:flex;flex-direction:column;gap:8px;padding:12px 4px 0}
+.hero{display:flex;flex-direction:column;gap:8px;padding:12px 0 0;min-width:0}
 .wordmark{font-family:var(--font-num);font-weight:700;font-size:clamp(32px,12.5vw,68px);white-space:nowrap;max-width:100%;overflow:hidden;line-height:.95;letter-spacing:.01em;margin:0;color:var(--ink);display:flex;align-items:center}
 .wordmark .dot{display:inline-block;width:.74em;height:.74em;border-radius:50%;margin:0 .03em;background:linear-gradient(var(--pink) 0 47%,transparent 47% 53%,var(--teal) 53% 100%);flex:none}
 
@@ -442,6 +442,7 @@ function renderHome(){
     '<div class="sec-row"><h2 class="sec"><span class="en">Matches</span>記録した試合</h2>'+(items?'<span class="swipe-hint">← スワイプで削除</span>':"")+'</div>'+
     (items ? '<ul class="list">'+items+'</ul>' : '<div class="empty">まだ記録がありません。<br>「新しい試合をはじめる」から記録できます。</div>')+
     '<p class="fine" style="font-size:11px;line-height:1.6;padding:0 4px">記録はこの端末のこのブラウザの中だけに保存されます。別のスマホや家族とは自動では共有されないので、試合が終わったらスコアシートをPDFか画像で保存して送ってください。</p>';
+  fitWordmark();
 }
 
 function inApp(){ var u = navigator.userAgent || ""; return / Line\/|FBAN|FBAV|Instagram|MicroMessenger/i.test(u); }
@@ -790,10 +791,26 @@ function fitSheet(){
   var f = $("#frame"), s = $("#scaler"); if (!f || !s) return;
   var k = f.clientWidth / 794; s.style.transform = "scale("+k+")"; f.style.height = (s.firstElementChild.offsetHeight * k) + "px";
 }
-window.addEventListener("resize", function(){ if (view==="sheet") fitSheet(); });
+window.addEventListener("resize", function(){ if (view==="sheet") fitSheet(); if (view==="home") fitWordmark(); });
+/* ロゴ「RALLY N●TE」を、緑の「新しい試合をはじめる」ボタンの左右の端にぴったり合わせる（文字の左右の余白も差し引く） */
+function fitWordmark(){
+  var h = document.querySelector("#v-home .wordmark"); if (!h || !h.parentNode.clientWidth) return;
+  var cta = document.querySelector('#v-home [data-act="new"]'), target = cta ? cta.getBoundingClientRect().width : h.parentNode.clientWidth;
+  h.style.fontSize = "100px"; h.style.margin = "0"; h.style.maxWidth = "none"; h.style.overflow = "visible";
+  var r = document.createRange(); r.selectNodeContents(h); var w = r.getBoundingClientRect().width;
+  var cs = getComputedStyle(h), ls = parseFloat(cs.letterSpacing) || 0, bl = 0, br = ls;
+  try {
+    var c = document.createElement("canvas").getContext("2d"); c.font = cs.fontWeight+" 100px "+cs.fontFamily;
+    var mR = c.measureText("R"), mE = c.measureText("E");
+    if (typeof mR.actualBoundingBoxLeft === "number"){ bl = -mR.actualBoundingBoxLeft; br = ls + (mE.width - mE.actualBoundingBoxRight); }
+  } catch(e){}
+  var k = target / Math.max(1, w - bl - br);
+  h.style.fontSize = (100*k).toFixed(2) + "px";
+  h.style.marginLeft = (-bl*k).toFixed(2) + "px"; h.style.marginRight = (-br*k).toFixed(2) + "px";
+}
 window.addEventListener("orientationchange", function(){ setTimeout(function(){ if (view==="sheet") fitSheet(); }, 300); });
 var sheetRO = window.ResizeObserver ? new ResizeObserver(function(){ if (view==="sheet") fitSheet(); }) : null;
-if (document.fonts && document.fonts.ready) document.fonts.ready.then(function(){ if (view==="sheet") fitSheet(); });
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(function(){ if (view==="sheet") fitSheet(); if (view==="home") fitWordmark(); });
 
 /* ---------- export ---------- */
 var dlPromise = null;
