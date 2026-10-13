@@ -4,7 +4,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Rubik:wght@500;600;700;800;900&family=Zen+Maru+Gothic:wght@400;500;700;900&display=swap">
 <style>
-/* Layout: "SCOREBOARD" white (案C白, V29; mobile hardening V33; standalone web V34; name/team suggestions V35; 21-point option V36; 21pt cap 30 V37; wordmark fits CTA width V38; club byline V39; byline pink V40; 2-game format + rule order V41; prepare matches before play V42; POP poster redesign + bouncing title V43; rally line removed V44; byline team name in ink V45) — white ground, flat light-grey cards, rounded-rect controls; bright teal (A / primary) and bright pink (B) from the club logo; score mode = two deep-tinted panels with numbers in logo teal / deep pink. The printed sheet stays white paper. */
+/* Layout: "SCOREBOARD" white (案C白, V29; mobile hardening V33; standalone web V34; name/team suggestions V35; 21-point option V36; 21pt cap 30 V37; wordmark fits CTA width V38; club byline V39; byline pink V40; 2-game format + rule order V41; prepare matches before play V42; POP poster redesign + bouncing title V43; rally line removed V44; byline team name in ink V45; sticker deeper pink + white text V46) — white ground, flat light-grey cards, rounded-rect controls; bright teal (A / primary) and bright pink (B) from the club logo; score mode = two deep-tinted panels with numbers in logo teal / deep pink. The printed sheet stays white paper. */
 :root{
   --bg:#FFFFFF; --surface:#F1F6F6; --field:#FFFFFF; --ink:#142625; --muted:#5E7372; --line:#DCE7E6;
   --teal:#058687; --on-teal:#FFFFFF; --teal-tint:#DCEEEE; --teal-ink:#046A6B;
@@ -43,11 +43,11 @@ h2.sec .en{font-size:24px;letter-spacing:.02em;color:var(--ink)}
 .hero{display:flex;flex-direction:column;gap:8px;padding:4px 0 0;min-width:0}
 .poster{--stk:clamp(86px,26vw,132px);position:relative;background:var(--teal);color:#FFFFFF;border-radius:28px;padding:16px 18px 20px;overflow:hidden;min-width:0;isolation:isolate}
 .poster-top{position:relative;z-index:3;min-height:calc(var(--stk) - 18px);margin:0;padding-right:calc(var(--stk) + 4px);font-family:var(--font-num);font-weight:800;font-size:11px;line-height:1.35;letter-spacing:.14em;text-transform:uppercase;color:#FFFFFF}
-.sticker{position:absolute;z-index:4;top:10px;right:10px;width:var(--stk);height:var(--stk);transform:rotate(-12deg);color:var(--ink)}
+.sticker{position:absolute;z-index:4;top:10px;right:10px;width:var(--stk);height:var(--stk);transform:rotate(-12deg);color:#FFFFFF}
 .sticker svg{display:block;width:100%;height:100%;overflow:visible}
-.sticker .bg{fill:var(--pink-soft)}
-.sticker text{font-family:var(--font-num);font-weight:800;font-size:9.6px;letter-spacing:.06em;fill:var(--ink)}
-.sticker .mid{font-family:var(--font-disp);font-weight:900;font-synthesis:none;font-size:14px;letter-spacing:.03em}
+.sticker .bg{fill:var(--pink-dot)}
+.sticker text{font-family:var(--font-num);font-weight:800;font-size:7.6px;letter-spacing:.08em;fill:#FFFFFF}
+.sticker .mid{font-family:var(--font-disp);font-weight:900;font-synthesis:none;font-size:15px;letter-spacing:.03em}
 .wordmark{position:relative;z-index:2;font-family:var(--font-disp);font-weight:900;font-synthesis:none;font-size:clamp(56px,22vw,150px);line-height:.88;letter-spacing:.01em;margin:6px 0 0;color:#FFFFFF;display:flex;flex-direction:column;align-items:flex-start;white-space:nowrap}
 .wordmark .ln{display:block;width:max-content;position:relative}
 .wordmark .ln:first-child{z-index:2}
@@ -427,9 +427,9 @@ var TRASH = '<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" 
 var PIN = '<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>';
 var SHUTTLE = '<svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3l6 11h2l6-11" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M9 3l3 11M15 3l-3 11" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="18" r="4" fill="currentColor"/></svg>';
 var STICKER = '<div class="sticker" aria-hidden="true"><svg viewBox="-4 -4 108 108"><path class="bg" d="M91.0 50.0Q101.2 59.0 88.5 64.0Q95.0 76.0 81.4 76.4Q83.4 89.8 70.5 85.5Q67.8 98.9 57.1 90.4Q50.0 102.0 42.9 90.4Q32.2 98.9 29.5 85.5Q16.6 89.8 18.6 76.4Q5.0 76.0 11.5 64.0Q-1.2 59.0 9.0 50.0Q-1.2 41.0 11.5 36.0Q5.0 24.0 18.6 23.6Q16.6 10.2 29.5 14.5Q32.2 1.1 42.9 9.6Q50.0 -2.0 57.1 9.6Q67.8 1.1 70.5 14.5Q83.4 10.2 81.4 23.6Q95.0 24.0 88.5 36.0Q101.2 41.0 91.0 50.0Z"/>'+
-  '<path id="rn-ring" d="M50 50m-31 0a31 31 0 1 1 62 0a31 31 0 1 1 -62 0" fill="none"/>'+
-  '<text><textPath href="#rn-ring" textLength="190" lengthAdjust="spacing">LET\u2019S RALLY! \u2605 LET\u2019S RALLY! \u2605</textPath></text>'+
-  '<text class="mid" x="50" y="48" text-anchor="middle">SCORE</text><text class="mid" x="50" y="62" text-anchor="middle">SHEET</text></svg></div>';
+  '<path id="rn-ring" d="M50 50m-33 0a33 33 0 1 1 66 0a33 33 0 1 1 -66 0" fill="none"/>'+
+  '<text><textPath href="#rn-ring" textLength="204" lengthAdjust="spacing">LET\u2019S RALLY! \u2605 LET\u2019S RALLY! \u2605</textPath></text>'+
+  '<text class="mid" x="50" y="48.5" text-anchor="middle">SCORE</text><text class="mid" x="50" y="63" text-anchor="middle">SHEET</text></svg></div>';
 function wordmarkHTML(){
   var i = 0;
   function ch(c, cls){ return '<span class="ch'+(cls?" "+cls:"")+'" style="--i:'+(i++)+'">'+c+'</span>'; }
