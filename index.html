@@ -4,7 +4,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@500;600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap">
 <style>
-/* Layout: "SCOREBOARD" white (案C白, V29; mobile hardening V33; standalone web V34; name/team suggestions V35; 21-point option V36; 21pt cap 30 V37; wordmark fits CTA width V38; club byline V39; byline pink V40) — white ground, flat light-grey cards, rounded-rect controls; bright teal (A / primary) and bright pink (B) from the club logo; score mode = two deep-tinted panels with numbers in logo teal / deep pink. The printed sheet stays white paper. */
+/* Layout: "SCOREBOARD" white (案C白, V29; mobile hardening V33; standalone web V34; name/team suggestions V35; 21-point option V36; 21pt cap 30 V37; wordmark fits CTA width V38; club byline V39; byline pink V40; 2-game format + rule order V41) — white ground, flat light-grey cards, rounded-rect controls; bright teal (A / primary) and bright pink (B) from the club logo; score mode = two deep-tinted panels with numbers in logo teal / deep pink. The printed sheet stays white paper. */
 :root{
   --bg:#FFFFFF; --surface:#F1F6F6; --field:#FFFFFF; --ink:#142625; --muted:#5E7372; --line:#DCE7E6;
   --teal:#058687; --on-teal:#FFFFFF; --teal-tint:#DCEEEE; --teal-ink:#046A6B;
@@ -338,13 +338,24 @@ function gameOver(m,g){
   return hi - lo >= 2;                       /* 延長あり：2点差 */
 }
 function ruleLabel(M){
-  return M.points+"点・"+(M.deuce ? "延長あり"+(M.cap ? "（上限"+M.cap+"点）" : "（上限なし）") : "延長なし")+"・"+(M.games===3 ? "3ゲーム" : "1ゲーム");
+  return M.points+"点・"+(M.deuce ? "延長あり"+(M.cap ? "（上限"+M.cap+"点）" : "（上限なし）") : "延長なし")+"・"+M.games+"ゲーム";
 }
 function gameWinner(m,g){ if(!gameOver(m,g)) return null; var t=tally(g); return t.a>t.b ? "A" : "B"; }
 function wins(m){ var w={A:0,B:0}; m.games.forEach(function(g){ var x=gameWinner(m,g); if(x) w[x]++; }); return w; }
 function ivPoint(m){ return m.meta.points===21 ? 11 : (m.meta.points===15 ? 8 : 0); }
 function need(m){ return Math.ceil(m.meta.games/2); }
-function matchWinner(m){ if (m.result && m.result.type !== "normal") return m.result.winner || null; var w=wins(m), n=need(m); return w.A>=n ? "A" : (w.B>=n ? "B" : null); }
+function matchWinner(m){
+  if (m.result && m.result.type !== "normal") return m.result.winner || null;
+  var w=wins(m);
+  if (m.meta.games === 2){ /* 2ゲーム制：2ゲームとも行い、2-0なら勝ち、1-1は引き分け */
+    if (!twoDone(m)) return null; return w.A>w.B ? "A" : (w.B>w.A ? "B" : null);
+  }
+  var n=need(m); return w.A>=n ? "A" : (w.B>=n ? "B" : null);
+}
+function twoDone(m){ return m.games.length >= 2 && gameOver(m, m.games[0]) && gameOver(m, m.games[1]); }
+/* 試合が終わったか（2ゲーム制の引き分けも「終わり」） */
+function matchOver(m){ if (m.result && m.result.type !== "normal") return true; return m.meta.games === 2 ? twoDone(m) : !!matchWinner(m); }
+function isDraw(m){ return (!m.result || m.result.type === "normal") && m.meta.games === 2 && twoDone(m) && !matchWinner(m); }
 function server(g){ return g.rallies.length ? g.rallies[g.rallies.length-1] : g.first; }
 function lastGame(m){ return m.games[m.games.length-1]; }
 
@@ -425,7 +436,7 @@ function renderHome(){
   var items = list.map(function(m){
     var p = (m.meta.date||"").split("-"), d = p.length===3 ? new Date(+p[0],+p[1]-1,+p[2]) : null;
     var dt = p.length===3 ? (+p[1])+"."+(+p[2])+(d&&!isNaN(d) ? " "+WE[d.getDay()] : "") : "日付なし";
-    var chip = m.sample ? '<span class="chip">サンプル</span>' : (m.status==="done" ? '<span class="chip done">'+({retired:"リタイア",stopped:"途中終了"}[m.result && m.result.type] || "終了")+'</span>' : '<span class="chip live">'+(isResult(m)?"入力中":"試合中")+'</span>');
+    var chip = m.sample ? '<span class="chip">サンプル</span>' : (m.status==="done" ? '<span class="chip done">'+({retired:"リタイア",stopped:"途中終了"}[m.result && m.result.type] || (isDraw(m) ? "引き分け" : "終了"))+'</span>' : '<span class="chip live">'+(isResult(m)?"入力中":"試合中")+'</span>');
     var gs = m.games.filter(function(g){ return g.rallies.length; });
     var scs = (gs.length ? gs : [{rallies:[]}]).map(function(g){ /* 取った側（途中のゲームはリードしている側）の数字に色 */
       var t = tally(g), w = g.rallies.length ? (gameWinner(m,g) || (t.a>t.b ? "A" : (t.b>t.a ? "B" : ""))) : "";
@@ -489,11 +500,11 @@ function renderSetup(){
           sugField(k+"team", inp("f-"+k+"team","チーム・学校名",p.team,"text","所属"))+'</fieldset>';
       }).join("")+
       '<fieldset><legend><span class="en">Rules</span>試合ルール</legend>'+
-        '<div class="field"><span class="lbl">1ゲームの点数</span>'+seg("pmode",[["15","15点"],["21","21点"],["free","フリー"]],pmodeOf(M.points))+'</div>'+
+        '<div class="field"><span class="lbl">1ゲームの点数</span>'+seg("pmode",[["21","21点"],["15","15点"],["free","フリー"]],pmodeOf(M.points))+'</div>'+
         '<div class="only-free">'+inp("f-pfree","点数（フリー）",pmodeOf(M.points)==="free"?M.points:"","number","例：11、30")+'</div>'+
         '<div class="field"><span class="lbl">延長</span>'+seg("deuce",[["1","あり<br><small>2点差がつくまで</small>"],["0","なし<br><small>先に規定点で終了</small>"]],M.deuce?"1":"0")+'</div>'+
         '<div class="only-deuce">'+inp("f-cap","上限点（空欄なら上限なし）",M.cap||"","number","例：30")+'</div>'+
-        '<div class="field"><span class="lbl">ゲーム数</span>'+seg("games",[["3","3ゲーム<br><small>2ゲーム先取</small>"],["1","1ゲーム"]],M.games)+'</div>'+
+        '<div class="field"><span class="lbl">ゲーム数</span>'+seg("games",[["3","3ゲーム<br><small>2ゲーム先取</small>"],["2","2ゲーム<br><small>引分あり</small>"],["1","1ゲーム"]],M.games)+'</div>'+
         (locked?'<p class="fine">記録済みの点数は、新しいルールでゲーム終了かどうか判定し直されます。</p>':"")+
       '</fieldset>'+
       '<fieldset class="only-rally"><legend><span class="en">Serve</span>最初にサービスするのは</legend>'+seg("first",[["A","A（こちら）"],["B","B（相手）"]],first)+'</fieldset>'+
@@ -588,7 +599,7 @@ function submitSetup(m, locked){
       games:[{ rallies:[], first: radio("first")||"A", start:null, end:null }] };
     if (mode === "result"){ /* 勝敗が決まるのに必要なゲーム数だけ、入力欄を先に用意 */
       nm.games = [];
-      for (var gi=0; gi<Math.ceil(meta.games/2); gi++) nm.games.push({ rallies:[], first:"A", start:null, end:null });
+      for (var gi=0; gi<(meta.games===2 ? 2 : Math.ceil(meta.games/2)); gi++) nm.games.push({ rallies:[], first:"A", start:null, end:null });
     }
     presetMode = null; db.matches.push(nm); save(); curId = nm.id; show(mode === "result" ? "edit" : "score");
   }
@@ -617,10 +628,10 @@ function renderScore(){
       '<button class="cta" data-act="end-no">試合を続ける</button></div></div></div>';
   } else if (over){
     var gw = gameWinner(m,g);
-    if (mw){
+    if (mw || matchOver(m)){
       gate = '<div class="gate"><div class="gate-card"><p class="eyebrow">Match finished</p><p style="font-size:20px;font-weight:900">試合終了</p>'+
         (m.meta.games>1?'<p class="big">'+w.A+' – '+w.B+'</p>':'<p class="big">'+t.a+' – '+t.b+'</p>')+
-        '<p class="who-won">勝者：'+esc(sideName(m,mw))+'</p>'+
+        '<p class="who-won">'+(mw ? '勝者：'+esc(sideName(m,mw)) : '引き分け')+'</p>'+
         '<button class="cta" data-act="finish">スコアシートを見る</button><button class="btn" data-act="undo">↶ 1点戻す</button></div></div>';
     } else {
       gate = '<div class="gate"><div class="gate-card"><p class="eyebrow">Game '+(gi+1)+'</p><p style="font-size:20px;font-weight:900">第'+(gi+1)+'ゲーム終了</p>'+
@@ -641,7 +652,7 @@ function point(s){
   var now = Date.now(); if (!g.start) g.start = now; if (!m.startedAt) m.startedAt = now;
   g.rallies.push(s);
   var t = tally(g), mine = s==="A" ? t.a : t.b, other = s==="A" ? t.b : t.a;
-  if (gameOver(m,g)){ g.end = now; if (matchWinner(m)) m.endedAt = now; }
+  if (gameOver(m,g)){ g.end = now; if (matchOver(m)) m.endedAt = now; }
   else if (ivPoint(m) && mine===ivPoint(m) && other<ivPoint(m)){ /* インターバル：21点制は11点、15点制は8点 */
     toast(ivPoint(m)+"点：インターバル"+(m.meta.games===3 && m.games.length===3 ? "・チェンジエンズ" : ""));
   } else if (m.meta.deuce && t.a===t.b && t.a===m.meta.points-1){
@@ -696,7 +707,7 @@ function sheetHTML(m){
     return '<div class="gm"><div class="gt"><b>'+(multi?"第"+(i+1)+"ゲーム":"ゲーム")+'　'+t.a+' – '+t.b+(gameOver(m,g)?"":"（途中）")+'</b>'+(g.edited?'<span>※点数を手修正（経過の順番は実際と異なる場合あり）</span>':"")+'</div>'+strip(g)+'</div>';
   }).join("");
   var now = new Date(), rt = m.result && m.result.type;
-  var stamp = rt==="retired" ? "リタイア" : rt==="stopped" ? "途中終了" : (m.status!=="done"||!mw ? "記録途中" : "");
+  var stamp = rt==="retired" ? "リタイア" : rt==="stopped" ? "途中終了" : (isDraw(m) && m.status==="done" ? "引き分け" : (m.status!=="done"||!mw ? "記録途中" : ""));
   var winTxt = mw ? sideName(m,mw) + (rt==="retired" ? "（相手リタイア）" : "") : (rt==="stopped" ? "なし（途中終了）" : "");
   return '<div class="sheet">'+
     '<div class="hd"><div><div class="k">BADMINTON SCORE SHEET</div><h1>'+esc(titleOf(M,"（大会名なし）"))+'</h1></div><div style="display:flex;gap:12px;align-items:center">'+(stamp?'<span class="stamp">'+stamp+'</span>':"")+'<span class="mark">RALLY NOTE</span></div></div>'+
@@ -768,7 +779,7 @@ function renderKeepFocus(){
 }
 function afterEdit(m, quiet){
   var special = m.result && m.result.type !== "normal";
-  if (special || matchWinner(m)){ m.status = "done"; if (!m.endedAt) m.endedAt = Date.now(); }
+  if (special || matchOver(m)){ m.status = "done"; if (!m.endedAt) m.endedAt = Date.now(); }
   else { m.status = "playing"; m.endedAt = null; }
   m.sample = false; save(); if (!quiet) render();
 }
