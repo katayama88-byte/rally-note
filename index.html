@@ -4,7 +4,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@500;600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap">
 <style>
-/* Layout: "SCOREBOARD" white (案C白, V29; mobile hardening V33; standalone web V34; name/team suggestions V35; 21-point option V36; 21pt cap 30 V37; wordmark fits CTA width V38; club byline V39; byline pink V40; 2-game format + rule order V41) — white ground, flat light-grey cards, rounded-rect controls; bright teal (A / primary) and bright pink (B) from the club logo; score mode = two deep-tinted panels with numbers in logo teal / deep pink. The printed sheet stays white paper. */
+/* Layout: "SCOREBOARD" white (案C白, V29; mobile hardening V33; standalone web V34; name/team suggestions V35; 21-point option V36; 21pt cap 30 V37; wordmark fits CTA width V38; club byline V39; byline pink V40; 2-game format + rule order V41; prepare matches before play V42) — white ground, flat light-grey cards, rounded-rect controls; bright teal (A / primary) and bright pink (B) from the club logo; score mode = two deep-tinted panels with numbers in logo teal / deep pink. The printed sheet stays white paper. */
 :root{
   --bg:#FFFFFF; --surface:#F1F6F6; --field:#FFFFFF; --ink:#142625; --muted:#5E7372; --line:#DCE7E6;
   --teal:#058687; --on-teal:#FFFFFF; --teal-tint:#DCEEEE; --teal-ink:#046A6B;
@@ -76,6 +76,9 @@ button[disabled]{opacity:.5;cursor:default}
 .chip{font-size:12px;font-weight:700;white-space:nowrap;color:var(--muted);display:inline-flex;align-items:center;gap:6px}
 .chip.live{color:var(--pink-ink)}
 .chip.live::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--pink-dot)}
+.chip.ready{color:var(--teal-ink)}
+.chip.ready::before{content:"";width:6px;height:6px;border-radius:50%;border:2px solid var(--teal)}
+.item .go{flex:none;font-size:13px;font-weight:700;color:var(--teal-ink);white-space:nowrap;padding-bottom:2px}
 .empty{background:var(--surface);border-radius:var(--r);padding:28px 20px;text-align:center;color:var(--muted)}
 
 /* swipe to delete (home list) */
@@ -314,7 +317,8 @@ db.matches.forEach(function(m){ /* older records: fill in new rule fields */
 var sugTouch = 0;
 var view = "home", curId = null, editingId = null, confirmDel = false, wake = null, endAsk = false, presetMode = null;
 function isResult(m){ return !!(m && m.mode === "result"); }
-function openView(m){ return m.status==="done" ? "sheet" : (isResult(m) ? "edit" : "score"); }
+function isReady(m){ return !!(m && m.status === "ready"); } /* 試合前（情報だけ入力して準備した試合） */
+function openView(m){ return m.status==="ready" ? "setup" : (m.status==="done" ? "sheet" : (isResult(m) ? "edit" : "score")); }
 
 /* ---------- helpers ---------- */
 function esc(s){ return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]; }); }
@@ -432,11 +436,13 @@ function render(){
 
 function renderHome(){
   swOpen = null;
-  var list = db.matches.slice().sort(function(x,y){ return y.created - x.created; });
+  var list = db.matches.slice().sort(function(x,y){ /* 試合前の試合を上に（準備した順）、その下に記録した試合（新しい順） */
+    var rx = isReady(x), ry = isReady(y); if (rx !== ry) return rx ? -1 : 1;
+    return rx ? x.created - y.created : y.created - x.created; });
   var items = list.map(function(m){
     var p = (m.meta.date||"").split("-"), d = p.length===3 ? new Date(+p[0],+p[1]-1,+p[2]) : null;
     var dt = p.length===3 ? (+p[1])+"."+(+p[2])+(d&&!isNaN(d) ? " "+WE[d.getDay()] : "") : "日付なし";
-    var chip = m.sample ? '<span class="chip">サンプル</span>' : (m.status==="done" ? '<span class="chip done">'+({retired:"リタイア",stopped:"途中終了"}[m.result && m.result.type] || (isDraw(m) ? "引き分け" : "終了"))+'</span>' : '<span class="chip live">'+(isResult(m)?"入力中":"試合中")+'</span>');
+    var chip = m.sample ? '<span class="chip">サンプル</span>' : isReady(m) ? '<span class="chip ready">試合前</span>' : (m.status==="done" ? '<span class="chip done">'+({retired:"リタイア",stopped:"途中終了"}[m.result && m.result.type] || (isDraw(m) ? "引き分け" : "終了"))+'</span>' : '<span class="chip live">'+(isResult(m)?"入力中":"試合中")+'</span>');
     var gs = m.games.filter(function(g){ return g.rallies.length; });
     var scs = (gs.length ? gs : [{rallies:[]}]).map(function(g){ /* 取った側（途中のゲームはリードしている側）の数字に色 */
       var t = tally(g), w = g.rallies.length ? (gameWinner(m,g) || (t.a>t.b ? "A" : (t.b>t.a ? "B" : ""))) : "";
@@ -444,9 +450,9 @@ function renderHome(){
     }).join("");
     return '<li class="swipe" data-id="'+m.id+'"><div class="swipe-act"><button class="swipe-del" data-act="swipe-del" data-id="'+m.id+'" aria-label="この試合を削除">'+TRASH+'削除</button></div><button class="item" data-act="open" data-id="'+m.id+'">'+
       '<span class="top"><span class="dt">'+dt+'</span>'+chip+'</span>'+
-      '<span class="t">'+esc(titleOf(m.meta,"大会名なし"))+' · '+(m.meta.type==="D"?"ダブルス":"シングルス")+'</span>'+
+      '<span class="t">'+esc(titleOf(m.meta,"大会名なし"))+(m.meta.round?' · '+esc(m.meta.round):"")+' · '+(m.meta.type==="D"?"ダブルス":"シングルス")+'</span>'+
       '<span class="row"><span class="names"><span class="a"><span class="nx">'+esc(sideName(m,"A"))+'</span>'+(m.meta.a.team?'<small class="tm">'+esc(m.meta.a.team)+'</small>':"")+'</span><span class="b"><span class="nx">'+esc(sideName(m,"B"))+'</span>'+(m.meta.b.team?'<small class="tm">'+esc(m.meta.b.team)+'</small>':"")+'</span></span>'+
-      '<span class="scs'+(gs.length<=1?" big":"")+'" aria-label="スコア '+esc(scoreLine(m)||"0-0")+'">'+scs+'</span></span></button></li>';
+      (isReady(m) ? '<span class="go">タップして開始 ›</span>' : '<span class="scs'+(gs.length<=1?" big":"")+'" aria-label="スコア '+esc(scoreLine(m)||"0-0")+'">'+scs+'</span>')+'</span></button></li>';
   }).join("");
   $("#v-home").innerHTML =
     '<header class="hero"><p class="eyebrow">Badminton score sheet</p><h1 class="wordmark" aria-label="RALLY NOTE">RALLY N<span class="dot" aria-hidden="true"></span>TE</h1><p class="byline">by <b>KINASHI BADMINTON Jr.</b></p></header>'+
@@ -477,12 +483,13 @@ function renderSetup(){
   var m = editingId ? find(editingId) : null, M = m ? m.meta : defaults();
   var locked = !!(m && m.games.some(function(g){ return g.rallies.length; }));
   var first = m ? m.games[0].first : "A", mode = m ? (m.mode || "rally") : M.mode;
+  var ready = isReady(m), fresh = !m || ready; /* fresh：まだ試合を始めていない（新規 or 試合前） */
   $("#v-setup").innerHTML =
-    '<button class="back" data-act="'+(m?"cancel-edit":"home")+'">← '+(m?"もどる":"一覧")+'</button>'+
-    '<div><p class="eyebrow">'+(m?"Edit match":"New match")+'</p><h2 style="margin:2px 0 0;font-size:26px;font-weight:900">'+(m?"試合情報を編集":"試合の情報")+'</h2></div>'+
-    '<p class="fine" style="font-size:14px">すべて空欄のままでも先へ進めます。名前などはあとから編集できます。</p>'+
+    '<button class="back" data-act="'+(m?"cancel-edit":"home")+'">← '+(m&&!ready?"もどる":"一覧")+'</button>'+
+    '<div><p class="eyebrow">'+(ready?"Before match":(m?"Edit match":"New match"))+'</p><h2 style="margin:2px 0 0;font-size:26px;font-weight:900">'+(m&&!ready?"試合情報を編集":"試合の情報")+'</h2></div>'+
+    '<p class="fine" style="font-size:14px">'+(ready ? "準備しておいた試合です。内容を確かめて「試合開始」を押してください。" : "すべて空欄のままでも先へ進めます。名前などはあとから編集できます。")+'</p>'+
     '<form id="f" data-type="'+M.type+'" data-pmode="'+pmodeOf(M.points)+'" data-deuce="'+(M.deuce?"1":"0")+'" data-mode="'+mode+'" novalidate>'+
-      (m ? "" : '<fieldset><legend><span class="en">Mode</span>記録のしかた</legend>'+seg("mode",[["rally","1点ずつ記録<br><small>試合中にタップ</small>"],["result","結果だけ入力<br><small>最終スコアのみ</small>"]],mode)+'</fieldset>')+
+      (!fresh ? "" : '<fieldset><legend><span class="en">Mode</span>記録のしかた</legend>'+seg("mode",[["rally","1点ずつ記録<br><small>試合中にタップ</small>"],["result","結果だけ入力<br><small>最終スコアのみ</small>"]],mode)+'</fieldset>')+
       '<fieldset>'+
         '<div class="field">'+inp("f-tour","大会名",M.tournament,"text","例：市民バドミントン大会")+
           '<div id="tour-sug" class="sug" hidden></div></div>'+
@@ -510,7 +517,8 @@ function renderSetup(){
       '<fieldset class="only-rally"><legend><span class="en">Serve</span>最初にサービスするのは</legend>'+seg("first",[["A","A（こちら）"],["B","B（相手）"]],first)+'</fieldset>'+
       '<details><summary>記録者・メモ（任意）</summary><div class="inner">'+inp("f-rec","記録者",M.recorder,"text","例：保護者 山田")+
         '<div class="field"><label for="f-note">メモ</label><textarea id="f-note" placeholder="気づいたこと、反省点など">'+esc(M.note)+'</textarea></div></div></details>'+
-      '<button class="cta" type="submit">'+(m?"保存する":'<span class="only-rally">試合開始（スコア入力へ）</span><span class="only-result">結果の入力へ</span>')+'</button>'+
+      '<button class="cta" type="submit">'+(!fresh?"保存する":'<span class="only-rally">試合開始（スコア入力へ）</span><span class="only-result">結果の入力へ</span>')+'</button>'+
+      (fresh ? '<button class="btn" type="button" data-act="prep" style="flex-direction:column;gap:0;line-height:1.35">'+(ready?"保存して一覧にもどる":"保存して準備しておく")+'<small>試合はあとで一覧から開始</small></button>' : "")+
     '</form>';
   var f = $("#f");
   f.addEventListener("change", function(e){
@@ -531,7 +539,8 @@ function renderSetup(){
     el.addEventListener("blur", function(){ setTimeout(function(){ if (box && Date.now() - sugTouch > 800) box.hidden = true; }, 200); });
     box.addEventListener("pointerdown", function(){ sugTouch = Date.now(); });
   });
-  f.addEventListener("submit", function(e){ e.preventDefault(); submitSetup(m, locked); });
+  if (!m){ var ft = $("#f-time"); ft.dataset.auto = "1"; ft.addEventListener("input", function(){ delete ft.dataset.auto; }); }
+  f.addEventListener("submit", function(e){ e.preventDefault(); submitSetup(m, locked, "start"); });
 }
 /* 候補：この端末で前に入力した大会名・会場・名前・チーム名（新しい順、最大5件）。× で外したものは hidden* に入る。
    名前とチーム名は A・B 共通の候補 */
@@ -574,7 +583,13 @@ function hideSugExcept(k){ Object.keys(SUG).forEach(function(j){ var b=$("#"+j+"
 function pmodeOf(p){ return p===15 ? "15" : (p===21 ? "21" : "free"); } /* 1ゲームの点数：15点／21点／フリー */
 function val(id){ var el=$("#"+id); return el ? el.value.trim() : ""; }
 function radio(n){ var el=document.querySelector('input[name="'+n+'"]:checked'); return el ? el.value : null; }
-function submitSetup(m, locked){
+function freshGames(meta, mode, first){
+  if (mode !== "result") return [{ rallies:[], first: first, start:null, end:null }];
+  var gs = []; /* 結果だけ入力：勝敗が決まるのに必要なゲーム数だけ、入力欄を先に用意 */
+  for (var gi=0; gi<(meta.games===2 ? 2 : Math.ceil(meta.games/2)); gi++) gs.push({ rallies:[], first:"A", start:null, end:null });
+  return gs;
+}
+function submitSetup(m, locked, intent){
   var meta = {
     tournament: val("f-tour"), date: val("f-date"), time: val("f-time"), venue: val("f-venue"), round: val("f-round"), court: val("f-court"), category: val("f-cat"),
     type: radio("type")||"S",
@@ -590,17 +605,24 @@ function submitSetup(m, locked){
     var P = POOL[pk], used = P.vals(meta).map(function(v){ return (v || "").trim(); });
     db[P.hidden] = db[P.hidden].filter(function(v){ return used.indexOf(v) === -1; });
   });
+  var ft = $("#f-time");
+  if (intent === "prep" && ft && ft.dataset.auto === "1") meta.time = ""; /* 自動で入った「今の時刻」は準備の時刻なので残さない */
+  if (intent === "start" && !meta.time) meta.time = timeStr();
+  if (isReady(m) || (!m && intent === "prep")){
+    var md = radio("mode") === "result" ? "result" : "rally";
+    if (!m){ m = { id: uid(), created: Date.now(), status:"ready", startedAt:null, endedAt:null, swapped:false, meta: meta, mode: md, games: [] }; db.matches.push(m); }
+    m.meta = meta; m.mode = md; m.games = freshGames(meta, md, radio("first")||"A");
+    presetMode = null; editingId = null; curId = m.id;
+    if (intent === "prep"){ save(); toast("試合前として保存しました"); show("home"); return; }
+    m.status = "playing"; m.created = Date.now(); save(); show(md === "result" ? "edit" : "score"); return;
+  }
   if (m){
     m.meta = meta; m.games[0].first = radio("first")||"A"; m.sample = false; save();
     curId = m.id; editingId = null; toast("保存しました"); show(openView(m));
   } else {
     var mode = radio("mode") === "result" ? "result" : "rally";
     var nm = { id: uid(), created: Date.now(), status:"playing", startedAt:null, endedAt:null, swapped:false, meta: meta, mode: mode,
-      games:[{ rallies:[], first: radio("first")||"A", start:null, end:null }] };
-    if (mode === "result"){ /* 勝敗が決まるのに必要なゲーム数だけ、入力欄を先に用意 */
-      nm.games = [];
-      for (var gi=0; gi<(meta.games===2 ? 2 : Math.ceil(meta.games/2)); gi++) nm.games.push({ rallies:[], first:"A", start:null, end:null });
-    }
+      games: freshGames(meta, mode, radio("first")||"A") };
     presetMode = null; db.matches.push(nm); save(); curId = nm.id; show(mode === "result" ? "edit" : "score");
   }
 }
@@ -1002,7 +1024,8 @@ document.addEventListener("click", function(e){
     case "sug-del": var dk=el.dataset.k, dh=POOL[SUG[dk].pool].hidden; if (db[dh].indexOf(el.dataset.v) === -1) db[dh].push(el.dataset.v); save(); showSug(dk, $("#"+SUG[dk].input).value.trim()); toast("候補から削除しました"); break;
     case "new-result": editingId=null; presetMode="result"; show("setup"); break;
     case "home": confirmDel=false; show("home"); break;
-    case "open": curId = el.dataset.id; confirmDel=false; var mm=cur(); show(openView(mm)); break;
+    case "open": curId = el.dataset.id; confirmDel=false; var mm=cur(); editingId = isReady(mm) ? mm.id : null; show(openView(mm)); break;
+    case "prep": var pm = editingId ? find(editingId) : null; submitSetup(pm, false, "prep"); break;
     case "pt": point(el.dataset.side); break;
     case "undo": undo(); break;
     case "next": nextGame(); break;
@@ -1021,7 +1044,7 @@ document.addEventListener("click", function(e){
     case "eg-add": var pg=lastGame(m); m.games.push({ rallies:[], first: gameWinner(m,pg) || pg.first || "A", start:null, end:null, edited:true }); afterEdit(m); break;
     case "eg-del": m.games.splice(+el.dataset.g,1); if (!m.games.length) m.games.push({rallies:[],first:"A",start:null,end:null}); afterEdit(m); break;
     case "edit": editingId = m.id; show("setup"); break;
-    case "cancel-edit": editingId=null; show(m ? openView(m) : "home"); break;
+    case "cancel-edit": editingId=null; show(m && !isReady(m) ? openView(m) : "home"); break;
     case "pdf": exportFile("pdf"); break;
     case "png": exportFile("png"); break;
     case "del": confirmDel=true; renderSheet(); break;
