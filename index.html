@@ -4,7 +4,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Rubik:wght@500;600;700;800;900&family=Zen+Maru+Gothic:wght@400;500;700;900&display=swap">
 <style>
-/* Layout: "SCOREBOARD" white (案C白, V29; mobile hardening V33; standalone web V34; name/team suggestions V35; 21-point option V36; 21pt cap 30 V37; wordmark fits CTA width V38; club byline V39; byline pink V40; 2-game format + rule order V41; prepare matches before play V42; POP poster redesign + bouncing title V43; rally line removed V44; byline team name in ink V45; sticker deeper pink + white text V46; title period in logo pink V47; centred plus icon V48; calmer MATCHES heading V49; shuttle O tried V52-53 then back to the two-tone dot V54; rougher hand-made dot V55) — white ground, flat light-grey cards, rounded-rect controls; bright teal (A / primary) and bright pink (B) from the club logo; score mode = two deep-tinted panels with numbers in logo teal / deep pink. The printed sheet stays white paper. */
+/* Layout: "SCOREBOARD" white (案C白, V29; mobile hardening V33; standalone web V34; name/team suggestions V35; 21-point option V36; 21pt cap 30 V37; wordmark fits CTA width V38; club byline V39; byline pink V40; 2-game format + rule order V41; prepare matches before play V42; POP poster redesign + bouncing title V43; rally line removed V44; byline team name in ink V45; sticker deeper pink + white text V46; title period in logo pink V47; centred plus icon V48; calmer MATCHES heading V49; shuttle O tried V52-53 then back to the two-tone dot V54; rougher hand-made dot V55; page labels match MATCHES V56; lighter page headings V57; card labels in the same face V57) — white ground, flat light-grey cards, rounded-rect controls; bright teal (A / primary) and bright pink (B) from the club logo; score mode = two deep-tinted panels with numbers in logo teal / deep pink. The printed sheet stays white paper. */
 :root{
   --bg:#FFFFFF; --surface:#F1F6F6; --field:#FFFFFF; --ink:#142625; --muted:#5E7372; --line:#DCE7E6;
   --teal:#058687; --on-teal:#FFFFFF; --teal-tint:#DCEEEE; --teal-ink:#046A6B;
@@ -33,10 +33,10 @@ button,label,.seg,.chip,.eyebrow,.en{-webkit-user-select:none;user-select:none}
 :focus-visible{outline:3px solid var(--focus);outline-offset:2px}
 .app{max-width:720px;margin:0 auto;padding-inline:max(16px,env(safe-area-inset-left,0px)) max(16px,env(safe-area-inset-right,0px));padding-block:16px 56px;box-sizing:border-box;width:100%;min-width:0;display:flex;flex-direction:column;gap:20px}
 .app>section{display:flex;flex-direction:column;gap:20px;min-width:0}
-.eyebrow{font-family:var(--font-disp);font-weight:900;font-synthesis:none;letter-spacing:.05em;text-transform:uppercase;font-size:15px;line-height:1.2;color:var(--pink);margin:0}
+.eyebrow{font-family:var(--font-num);font-weight:800;letter-spacing:.14em;text-transform:uppercase;font-size:15px;line-height:1.2;color:var(--pink);margin:0}
 h2.sec{white-space:nowrap;font-size:14px;font-weight:700;margin:0;color:var(--muted);display:flex;align-items:baseline;gap:10px}
 h2.sec .en{font-family:var(--font-num);font-weight:800;font-size:15px;letter-spacing:.14em;color:var(--ink)}
-.en{font-family:var(--font-disp);font-weight:900;font-synthesis:none;font-size:13px;letter-spacing:.05em;color:var(--muted);text-transform:uppercase}
+.en{font-family:var(--font-num);font-weight:800;font-size:13px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase}
 .fine{font-size:13px;color:var(--muted);margin:0;line-height:1.7}
 
 /* hero */
@@ -195,7 +195,7 @@ form>.cta{margin-top:8px}
 .hist:empty{display:none}
 .gate{position:absolute;inset:0;background:rgba(255,255,255,.9);background:color-mix(in srgb,var(--score-bg) 86%,transparent);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);display:flex;align-items:flex-start;justify-content:center;padding:calc(env(safe-area-inset-top,0px) + 20px) 20px calc(env(safe-area-inset-bottom,0px) + 20px);z-index:2;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;box-sizing:border-box}
 .gate-card{margin:auto;background:var(--surface);border:0;border-radius:28px;padding:26px 22px;width:100%;max-width:400px;display:flex;flex-direction:column;gap:14px;text-align:center}
-.gate-card .eyebrow{font-size:22px}
+.gate-card .eyebrow{font-family:var(--font-disp);font-weight:900;font-synthesis:none;letter-spacing:.05em;font-size:22px}
 .gate-card .big{font-family:var(--font-num);font-weight:800;font-size:72px;line-height:1;margin:0;font-variant-numeric:tabular-nums;color:var(--ink)}
 .gate-card p{margin:0}
 .gate-card .who-won{font-weight:700;font-size:18px}
@@ -534,7 +534,7 @@ function renderSetup(){
   var ready = isReady(m), fresh = !m || ready; /* fresh：まだ試合を始めていない（新規 or 試合前） */
   $("#v-setup").innerHTML =
     '<button class="back" data-act="'+(m?"cancel-edit":"home")+'">← '+(m&&!ready?"もどる":"一覧")+'</button>'+
-    '<div><p class="eyebrow">'+(ready?"Before match":(m?"Edit match":"New match"))+'</p><h2 style="margin:2px 0 0;font-size:26px;font-weight:900">'+(m&&!ready?"試合情報を編集":"試合の情報")+'</h2></div>'+
+    '<div><p class="eyebrow">'+(ready?"Before match":(m?"Edit match":"New match"))+'</p><h2 style="margin:2px 0 0;font-size:26px;font-weight:700">'+(m&&!ready?"試合情報を編集":"試合の情報")+'</h2></div>'+
     '<p class="fine" style="font-size:14px">'+(ready ? "準備しておいた試合です。内容を確かめて「試合開始」を押してください。" : "すべて空欄のままでも先へ進めます。名前などはあとから編集できます。")+'</p>'+
     '<form id="f" data-type="'+M.type+'" data-pmode="'+pmodeOf(M.points)+'" data-deuce="'+(M.deuce?"1":"0")+'" data-mode="'+mode+'" novalidate>'+
       (!fresh ? "" : '<fieldset><legend><span class="en">Mode</span>記録のしかた</legend>'+seg("mode",[["rally","1点ずつ記録<br><small>試合中にタップ</small>"],["result","結果だけ入力<br><small>最終スコアのみ</small>"]],mode)+'</fieldset>')+
@@ -794,7 +794,7 @@ function renderSheet(){
   var m = cur(); if (!m) return show("home");
   $("#v-sheet").innerHTML =
     '<button class="back" data-act="home">← 一覧</button>'+
-    '<div><p class="eyebrow">Score sheet</p><h2 style="margin:2px 0 0;font-size:26px;font-weight:900;text-wrap:balance"><span style="display:inline-block">'+esc(sideName(m,"A"))+'</span> vs <span style="display:inline-block">'+esc(sideName(m,"B"))+'</span></h2></div>'+
+    '<div><p class="eyebrow">Score sheet</p><h2 style="margin:2px 0 0;font-size:26px;font-weight:700;text-wrap:balance"><span style="display:inline-block">'+esc(sideName(m,"A"))+'</span> vs <span style="display:inline-block">'+esc(sideName(m,"B"))+'</span></h2></div>'+
     '<p class="fine" style="font-size:14px">表の点数（各ゲームの数字）をタップすると、その場で直せます。</p>'+
     '<div class="frame" id="frame"><div class="scaler" id="scaler">'+sheetHTML(m)+'</div></div>'+
     '<button class="cta" data-act="pdf">PDFで保存・共有</button>'+
@@ -824,7 +824,7 @@ function renderEdit(){
     (isR ? '<div class="topnav">'+(m.status!=="done" ? '<button class="back" data-act="home">← 一覧</button>' : '<button class="back" data-act="sheet">← シートにもどる</button>')+
              '<button class="back info" data-act="edit">試合の情報を編集 →</button></div>'
          : '<button class="back" data-act="sheet">← シートにもどる</button>')+
-    '<div><p class="eyebrow">'+(isR?"Result":"Edit points")+'</p><h2 style="margin:2px 0 0;font-size:26px;font-weight:900">'+(isR?"結果を入力":"点数を編集")+'</h2>'+
+    '<div><p class="eyebrow">'+(isR?"Result":"Edit points")+'</p><h2 style="margin:2px 0 0;font-size:26px;font-weight:700">'+(isR?"結果を入力":"点数を編集")+'</h2>'+
       (isR?'<p class="fine" style="font-size:15px;margin-top:4px;font-weight:700;color:var(--ink)">'+esc(sideName(m,"A"))+' vs '+esc(sideName(m,"B"))+'</p>':"")+'</div>'+
     '<p class="fine" style="font-size:14px">'+(isR?"各ゲームの最終スコアを入力してください。数字の欄をタップすると直接入力できます。":"＋/−を押すか、数字を直接入力してください。")+'変更はすぐ保存されます。ルール（'+esc(ruleLabel(m.meta))+'）は'+(isR?"右上の「試合の情報を編集」":"「試合情報を編集」")+'で変えられます。</p>'+
     cards+
