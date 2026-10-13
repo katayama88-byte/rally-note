@@ -4,7 +4,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Rubik:wght@500;600;700;800;900&family=Zen+Maru+Gothic:wght@400;500;700;900&display=swap">
 <style>
-/* Layout: "SCOREBOARD" white (案C白, V29; mobile hardening V33; standalone web V34; name/team suggestions V35; 21-point option V36; 21pt cap 30 V37; wordmark fits CTA width V38; club byline V39; byline pink V40; 2-game format + rule order V41; prepare matches before play V42; POP poster redesign + bouncing title V43; rally line removed V44; byline team name in ink V45; sticker deeper pink + white text V46; title period in logo pink V47; centred plus icon V48; calmer MATCHES heading V49; shuttle O tried V52-53 then back to the two-tone dot V54; rougher hand-made dot V55; page labels match MATCHES V56; lighter page headings V57; card labels in the same face V57) — white ground, flat light-grey cards, rounded-rect controls; bright teal (A / primary) and bright pink (B) from the club logo; score mode = two deep-tinted panels with numbers in logo teal / deep pink. The printed sheet stays white paper. */
+/* Layout: "SCOREBOARD" white (案C白, V29; mobile hardening V33; standalone web V34; name/team suggestions V35; 21-point option V36; 21pt cap 30 V37; wordmark fits CTA width V38; club byline V39; byline pink V40; 2-game format + rule order V41; prepare matches before play V42; POP poster redesign + bouncing title V43; rally line removed V44; byline team name in ink V45; sticker deeper pink + white text V46; title period in logo pink V47; centred plus icon V48; calmer MATCHES heading V49; shuttle O tried V52-53 then back to the two-tone dot V54; rougher hand-made dot V55; page labels match MATCHES V56; lighter page headings V57; card labels in the same face V57; one type system everywhere V58) — white ground, flat light-grey cards, rounded-rect controls; bright teal (A / primary) and bright pink (B) from the club logo; score mode = two deep-tinted panels with numbers in logo teal / deep pink. The printed sheet stays white paper. */
 :root{
   --bg:#FFFFFF; --surface:#F1F6F6; --field:#FFFFFF; --ink:#142625; --muted:#5E7372; --line:#DCE7E6;
   --teal:#058687; --on-teal:#FFFFFF; --teal-tint:#DCEEEE; --teal-ink:#046A6B;
@@ -36,7 +36,7 @@ button,label,.seg,.chip,.eyebrow,.en{-webkit-user-select:none;user-select:none}
 .eyebrow{font-family:var(--font-num);font-weight:800;letter-spacing:.14em;text-transform:uppercase;font-size:15px;line-height:1.2;color:var(--pink);margin:0}
 h2.sec{white-space:nowrap;font-size:14px;font-weight:700;margin:0;color:var(--muted);display:flex;align-items:baseline;gap:10px}
 h2.sec .en{font-family:var(--font-num);font-weight:800;font-size:15px;letter-spacing:.14em;color:var(--ink)}
-.en{font-family:var(--font-num);font-weight:800;font-size:13px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase}
+.en{font-family:var(--font-num);font-weight:800;font-size:15px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase}
 .fine{font-size:13px;color:var(--muted);margin:0;line-height:1.7}
 
 /* hero */
@@ -74,7 +74,7 @@ h2.sec .en{font-family:var(--font-num);font-weight:800;font-size:15px;letter-spa
 @keyframes rn-pop{0%{opacity:0;transform:rotate(-70deg) scale(0)}100%{opacity:1;transform:rotate(-12deg) scale(1)}}
 
 /* buttons */
-.cta{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:64px;border:0;border-radius:var(--r);background:var(--teal);color:var(--on-teal);font-size:18px;font-weight:900;letter-spacing:.04em}
+.cta{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:64px;border:0;border-radius:var(--r);background:var(--teal);color:var(--on-teal);font-size:18px;font-weight:700;letter-spacing:.04em}
 .cta:active,.btn:active{transform:translateY(2px)}
 .cta.ink{background:var(--ink);min-height:68px;font-size:19px}
 .cta .plus{flex:none;width:36px;height:36px;border-radius:50%;background:var(--pink-dot);color:#FFFFFF;display:grid;place-items:center}
@@ -94,7 +94,7 @@ button[disabled]{opacity:.5;cursor:default}
 .item .dt{font-family:var(--font-num);font-weight:800;font-size:12px;letter-spacing:.1em;color:#FFFFFF;background:var(--ink);border-radius:99px;padding:3px 11px;line-height:1.5}
 .item .t{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .item .row{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin-top:2px}
-.item .names{display:flex;flex-direction:column;font-weight:900;font-size:16px;line-height:1.4;min-width:0;overflow-wrap:anywhere}
+.item .names{display:flex;flex-direction:column;font-weight:700;font-size:16px;line-height:1.4;min-width:0;overflow-wrap:anywhere}
 .item .names .b{color:var(--muted);font-weight:500}
 .item .names>span{display:flex;align-items:baseline;min-width:0}
 .item .names .nx{flex:0 0 auto;max-width:100%;overflow-wrap:anywhere}
@@ -110,7 +110,7 @@ button[disabled]{opacity:.5;cursor:default}
 .chip.live::before{content:"";width:7px;height:7px;border-radius:50%;background:#FFFFFF}
 .chip.ready{color:var(--teal-ink);background:var(--teal-tint)}
 .chip.ready::before{content:"";width:6px;height:6px;border-radius:50%;border:2px solid var(--teal)}
-.item .go{flex:none;font-size:13px;font-weight:900;color:#FFFFFF;background:var(--teal);border-radius:99px;padding:6px 13px;white-space:nowrap}
+.item .go{flex:none;font-size:13px;font-weight:700;color:#FFFFFF;background:var(--teal);border-radius:99px;padding:6px 13px;white-space:nowrap}
 .empty{background:var(--surface);border-radius:var(--r);padding:28px 20px;text-align:center;color:var(--muted)}
 
 /* swipe to delete (home list) */
@@ -125,7 +125,7 @@ li.swipe.gone{transition:height .22s ease-out,opacity .22s;opacity:0}
 /* form */
 form{display:flex;flex-direction:column;gap:12px}
 fieldset{border:0;margin:0;padding:18px 16px;display:flex;flex-direction:column;gap:14px;min-width:0;background:var(--surface);border-radius:var(--r)}
-legend{float:left;width:100%;font-size:16px;font-weight:900;margin:0;padding:0;letter-spacing:.04em;display:flex;flex-direction:column;gap:0}
+legend{float:left;width:100%;font-size:16px;font-weight:700;margin:0;padding:0;letter-spacing:.04em;display:flex;flex-direction:column;gap:0}
 legend .en{color:var(--ink)} legend .en.a{color:var(--teal-ink)} legend .en.b{color:var(--pink-ink)}
 fieldset.player.a{background:var(--teal-tint)} fieldset.player.b{background:var(--pink-tint)}
 legend+*{clear:both}
@@ -149,7 +149,7 @@ legend+*{clear:both}
 .seg input:focus-visible+label{outline:3px solid var(--focus);outline-offset:2px}
 .seg input:disabled+label{opacity:.5}
 .seg.v{grid-auto-flow:row}
-.badge{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;font-family:var(--font-disp);font-weight:900;font-synthesis:none;font-size:16px;color:#FFFFFF;flex:none}
+.badge{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;font-family:var(--font-num);font-weight:800;font-size:15px;color:#FFFFFF;flex:none}
 .badge.a{background:var(--teal)} .badge.b{background:var(--pink-dot)}
 form[data-type="S"] .only-d{display:none}
 details{background:var(--surface);border:0;border-radius:var(--r);padding:2px 16px}
@@ -163,7 +163,7 @@ form>.cta{margin-top:8px}
 .sbar{display:flex;align-items:center;gap:6px;min-width:0}
 .ibtn{flex:none;min-width:46px;height:46px;border-radius:var(--r-sm);border:0;background:var(--surface);font-size:15px;font-weight:700;padding:0 11px;white-space:nowrap;color:var(--ink)}
 .stitle{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;text-align:center;line-height:1.25}
-.stitle strong{font-family:var(--font-disp);font-weight:900;font-synthesis:none;font-size:20px;letter-spacing:.05em;color:var(--ink);white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.stitle strong{font-family:var(--font-num);font-weight:800;font-size:15px;letter-spacing:.14em;color:var(--ink);white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
 .stitle span{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
 .gbar{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;text-align:center;font-family:var(--font-num);font-weight:800;font-size:13px;letter-spacing:.14em}
 .gbar span{background:var(--surface);border-radius:99px;padding:6px 0}
@@ -179,13 +179,13 @@ form>.cta{margin-top:8px}
 .side.hit .pts{animation:bump .32s cubic-bezier(.34,1.56,.64,1)}
 @keyframes bump{0%{transform:translateY(6%) scale(1.14,.86)}100%{transform:none}}
 .side .who{display:flex;flex-direction:column;align-items:center;text-align:center;gap:2px;min-width:0;max-width:100%}
-.side .nm{font-size:18px;font-weight:900;line-height:1.3;overflow-wrap:anywhere}
+.side .nm{font-size:18px;font-weight:700;line-height:1.3;overflow-wrap:anywhere}
 .side .tm{font-size:12px}
 .side .tm,.side .tap-hint{color:#FFFFFF;opacity:.88}
 .side .pts{font-family:var(--font-num);font-weight:800;font-size:clamp(100px,34vw,280px);font-size:clamp(56px,min(70cqw,52cqh),280px);line-height:.88;font-variant-numeric:tabular-nums;letter-spacing:-.03em}
 .side .pts{color:#FFFFFF}
 .side .ft{display:flex;flex-direction:column;align-items:center;gap:8px}
-.srv{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:900;padding:6px 14px;border-radius:99px;background:#FFFFFF;color:var(--teal-ink);visibility:hidden}
+.srv{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;padding:6px 14px;border-radius:99px;background:#FFFFFF;color:var(--teal-ink);visibility:hidden}
 .side.b .srv{color:var(--pink-ink)}
 .srv.on{visibility:visible}
 .tap-hint{font-size:12px}
@@ -195,7 +195,6 @@ form>.cta{margin-top:8px}
 .hist:empty{display:none}
 .gate{position:absolute;inset:0;background:rgba(255,255,255,.9);background:color-mix(in srgb,var(--score-bg) 86%,transparent);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);display:flex;align-items:flex-start;justify-content:center;padding:calc(env(safe-area-inset-top,0px) + 20px) 20px calc(env(safe-area-inset-bottom,0px) + 20px);z-index:2;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;box-sizing:border-box}
 .gate-card{margin:auto;background:var(--surface);border:0;border-radius:28px;padding:26px 22px;width:100%;max-width:400px;display:flex;flex-direction:column;gap:14px;text-align:center}
-.gate-card .eyebrow{font-family:var(--font-disp);font-weight:900;font-synthesis:none;letter-spacing:.05em;font-size:22px}
 .gate-card .big{font-family:var(--font-num);font-weight:800;font-size:72px;line-height:1;margin:0;font-variant-numeric:tabular-nums;color:var(--ink)}
 .gate-card p{margin:0}
 .gate-card .who-won{font-weight:700;font-size:18px}
@@ -211,7 +210,7 @@ form>.cta{margin-top:8px}
 .sheet{overflow-wrap:break-word;width:794px;min-height:1123px;box-sizing:border-box;padding:44px 40px 36px;background:var(--paper);color:var(--paper-ink);font-family:var(--font-ui);font-size:13px;line-height:1.5;display:flex;flex-direction:column;gap:18px}
 .sheet .hd{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:3px solid var(--paper-ink);padding-bottom:12px;gap:20px}
 .sheet .hd .k{font-family:var(--font-num);font-weight:600;letter-spacing:.2em;font-size:12px;color:var(--paper-muted)}
-.sheet .hd h1{margin:2px 0 0;font-size:24px;font-weight:900;line-height:1.3}
+.sheet .hd h1{margin:2px 0 0;font-size:24px;font-weight:700;line-height:1.3}
 .sheet .mark{font-family:var(--font-disp);font-weight:900;font-synthesis:none;font-size:20px;letter-spacing:.03em;color:var(--paper-court);white-space:nowrap}
 .sheet table{border-collapse:collapse;width:100%}
 .sheet .meta{table-layout:fixed}
@@ -223,7 +222,7 @@ form>.cta{margin-top:8px}
 .sheet .pl.b{text-align:right}
 .sheet .pl .tag{font-family:var(--font-num);font-weight:700;font-size:13px;letter-spacing:.12em}
 .sheet .pl.a .tag{color:var(--paper-court)} .sheet .pl.b .tag{color:var(--paper-rival)}
-.sheet .pl .n{font-size:18px;font-weight:900;line-height:1.35}
+.sheet .pl .n{font-size:18px;font-weight:700;line-height:1.35}
 .sheet .pl .t{font-size:12px;color:var(--paper-muted)}
 .sheet .pl .won{font-family:var(--font-num);font-weight:700;font-size:12px;letter-spacing:.14em;color:#fff;padding:2px 10px;border-radius:99px;align-self:flex-start}
 .sheet .pl.b .won{align-self:flex-end}
@@ -244,7 +243,7 @@ form>.cta{margin-top:8px}
 .sheet .strip{margin-bottom:4px;table-layout:fixed;width:auto}
 .sheet .note{border:1px solid var(--paper-line);padding:8px 12px;min-height:44px;white-space:pre-wrap}
 .sheet .note .l{display:block;font-size:10px;font-weight:700;color:var(--paper-muted);letter-spacing:.08em}
-.sheet .stamp{white-space:nowrap;flex:none;border:2px solid var(--paper-rival);color:var(--paper-rival);font-weight:900;padding:2px 10px;border-radius:99px;font-size:12px}
+.sheet .stamp{white-space:nowrap;flex:none;border:2px solid var(--paper-rival);color:var(--paper-rival);font-weight:700;padding:2px 10px;border-radius:99px;font-size:12px}
 .sheet .foot{margin-top:auto;display:flex;justify-content:space-between;font-size:11px;color:var(--paper-muted);border-top:1px solid var(--paper-line);padding-top:8px}
 .sheet .legend{font-size:11px;color:var(--paper-muted)}
 
@@ -264,7 +263,7 @@ a.btn{text-decoration:none;color:var(--ink);box-sizing:border-box}
 .sug-pick svg{flex:none;color:var(--teal)}
 .sug-del{flex:none;width:52px;border:0;border-left:1px solid var(--line);background:none;color:var(--muted);font-size:22px;line-height:1}
 .ecard{background:var(--surface);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:12px}
-.ecard h3{margin:0;font-size:16px;font-weight:900;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.ecard h3{margin:0;font-size:16px;font-weight:700;display:flex;justify-content:space-between;align-items:center;gap:8px}
 .ecard .chip.done{color:var(--teal)}
 .erow{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:10px}
 .erow .who{display:flex;align-items:center;gap:8px;min-width:0;font-weight:700;overflow-wrap:anywhere}
@@ -276,7 +275,7 @@ a.btn{text-decoration:none;color:var(--ink);box-sizing:border-box}
 .mini{background:none;border:0;color:var(--danger);font-size:13px;font-weight:700;padding:6px}
 .frame .res td[data-act]{cursor:pointer;box-shadow:inset 0 -3px 0 var(--paper-line)}
 @media (hover:hover){.frame .res td[data-act]:hover{background:var(--paper-soft)}}
-.cell-head{display:flex;align-items:center;gap:10px;font-weight:900;font-size:18px;overflow-wrap:anywhere}
+.cell-head{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px;overflow-wrap:anywhere}
 .step.lg{grid-template-columns:72px minmax(0,1fr) 72px;align-self:stretch}
 .step.lg button,.step.lg input{height:72px;font-size:32px}
 .end-list{display:flex;flex-direction:column;gap:10px}
@@ -292,7 +291,7 @@ a.btn{text-decoration:none;color:var(--ink);box-sizing:border-box}
 /* small phones (iPhone SE etc.) */
 @media (max-width:360px){
   .ibtn{min-width:42px;padding:0 8px;font-size:14px}
-  .stitle strong{font-size:15px;letter-spacing:.1em}
+  .stitle strong{font-size:14px;letter-spacing:.12em}
   .step{grid-template-columns:44px 60px 44px}
   .step button,.step input{height:46px}
   .seg label{font-size:15px;padding:6px 4px}
@@ -309,7 +308,6 @@ a.btn{text-decoration:none;color:var(--ink);box-sizing:border-box}
   .undo{min-height:46px}
   .gate-card{padding:18px;gap:10px}
   .gate-card .big{font-size:48px}
-  .gate-card .eyebrow{font-size:18px}
 }
 .inapp{background:var(--pink-tint);border-radius:var(--r);padding:14px 16px;display:flex;flex-direction:column;gap:4px;font-size:13px;line-height:1.6;color:var(--ink)}
 .inapp b{color:var(--pink-ink);font-size:14px}
@@ -690,7 +688,7 @@ function renderScore(){
   var prev = m.games.slice(0,-1).map(function(x,i){ var s=tally(x); return "<span>G"+(i+1)+" "+s.a+"-"+s.b+"</span>"; }).join("");
   var gate = "";
   if (endAsk){
-    gate = '<div class="gate"><div class="gate-card"><p class="eyebrow">End match</p><p style="font-size:20px;font-weight:900">ここで試合を終了しますか？</p>'+
+    gate = '<div class="gate"><div class="gate-card"><p class="eyebrow">End match</p><p style="font-size:20px;font-weight:700">ここで試合を終了しますか？</p>'+
       '<p class="fine">リタイアなどでゲームの途中でも終了できます。点数は今の状態で記録されます。</p><div class="end-list">'+
       '<button class="btn" data-act="end" data-win="A">'+esc(sideName(m,"A"))+' の勝ち<br><small style="font-weight:500">（相手がリタイア）</small></button>'+
       '<button class="btn" data-act="end" data-win="B">'+esc(sideName(m,"B"))+' の勝ち<br><small style="font-weight:500">（相手がリタイア）</small></button>'+
@@ -699,12 +697,12 @@ function renderScore(){
   } else if (over){
     var gw = gameWinner(m,g);
     if (mw || matchOver(m)){
-      gate = '<div class="gate"><div class="gate-card"><p class="eyebrow">Match finished</p><p style="font-size:20px;font-weight:900">試合終了</p>'+
+      gate = '<div class="gate"><div class="gate-card"><p class="eyebrow">Match finished</p><p style="font-size:20px;font-weight:700">試合終了</p>'+
         (m.meta.games>1?'<p class="big">'+w.A+' – '+w.B+'</p>':'<p class="big">'+t.a+' – '+t.b+'</p>')+
         '<p class="who-won">'+(mw ? '勝者：'+esc(sideName(m,mw)) : '引き分け')+'</p>'+
         '<button class="cta" data-act="finish">スコアシートを見る</button><button class="btn" data-act="undo">↶ 1点戻す</button></div></div>';
     } else {
-      gate = '<div class="gate"><div class="gate-card"><p class="eyebrow">Game '+(gi+1)+'</p><p style="font-size:20px;font-weight:900">第'+(gi+1)+'ゲーム終了</p>'+
+      gate = '<div class="gate"><div class="gate-card"><p class="eyebrow">Game '+(gi+1)+'</p><p style="font-size:20px;font-weight:700">第'+(gi+1)+'ゲーム終了</p>'+
         '<p class="big">'+t.a+' – '+t.b+'</p><p class="who-won">'+esc(sideName(m,gw))+' がこのゲームを取りました</p>'+
         '<p class="fine">次のゲームは '+esc(sideName(m,gw))+' のサービスから。チェンジエンズです（画面の左右は ⇄ で入れ替え）。</p>'+
         '<button class="cta" data-act="next">第'+(gi+2)+'ゲームへ</button><button class="btn" data-act="undo">↶ 1点戻す</button></div></div>';
