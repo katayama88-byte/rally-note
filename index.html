@@ -4,7 +4,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Rubik:wght@500;600;700;800;900&family=Zen+Maru+Gothic:wght@400;500;700;900&display=swap">
 <style>
-/* Layout: "SCOREBOARD" white (案C白, V29; mobile hardening V33; standalone web V34; name/team suggestions V35; 21-point option V36; 21pt cap 30 V37; wordmark fits CTA width V38; club byline V39; byline pink V40; 2-game format + rule order V41; prepare matches before play V42; POP poster redesign + bouncing title V43) — white ground, flat light-grey cards, rounded-rect controls; bright teal (A / primary) and bright pink (B) from the club logo; score mode = two deep-tinted panels with numbers in logo teal / deep pink. The printed sheet stays white paper. */
+/* Layout: "SCOREBOARD" white (案C白, V29; mobile hardening V33; standalone web V34; name/team suggestions V35; 21-point option V36; 21pt cap 30 V37; wordmark fits CTA width V38; club byline V39; byline pink V40; 2-game format + rule order V41; prepare matches before play V42; POP poster redesign + bouncing title V43; rally line removed V44) — white ground, flat light-grey cards, rounded-rect controls; bright teal (A / primary) and bright pink (B) from the club logo; score mode = two deep-tinted panels with numbers in logo teal / deep pink. The printed sheet stays white paper. */
 :root{
   --bg:#FFFFFF; --surface:#F1F6F6; --field:#FFFFFF; --ink:#142625; --muted:#5E7372; --line:#DCE7E6;
   --teal:#058687; --on-teal:#FFFFFF; --teal-tint:#DCEEEE; --teal-ink:#046A6B;
@@ -43,8 +43,6 @@ h2.sec .en{font-size:24px;letter-spacing:.02em;color:var(--ink)}
 .hero{display:flex;flex-direction:column;gap:8px;padding:4px 0 0;min-width:0}
 .poster{--stk:clamp(86px,26vw,132px);position:relative;background:var(--teal);color:#FFFFFF;border-radius:28px;padding:16px 18px 20px;overflow:hidden;min-width:0;isolation:isolate}
 .poster-top{position:relative;z-index:3;min-height:calc(var(--stk) - 18px);margin:0;padding-right:calc(var(--stk) + 4px);font-family:var(--font-num);font-weight:800;font-size:11px;line-height:1.35;letter-spacing:.14em;text-transform:uppercase;color:#FFFFFF}
-.squiggle{position:absolute;left:0;top:0;width:100%;height:100%;z-index:1;pointer-events:none;color:var(--ink);overflow:visible}
-.squiggle path{fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;vector-effect:non-scaling-stroke}
 .sticker{position:absolute;z-index:4;top:10px;right:10px;width:var(--stk);height:var(--stk);transform:rotate(-12deg);color:var(--ink)}
 .sticker svg{display:block;width:100%;height:100%;overflow:visible}
 .sticker .bg{fill:var(--pink-soft)}
@@ -58,12 +56,10 @@ h2.sec .en{font-size:24px;letter-spacing:.02em;color:var(--ink)}
 .wordmark .dot{display:inline-block;width:.7em;height:.7em;border-radius:50%;margin:0 .04em;background:linear-gradient(var(--pink-dot) 0 46%,transparent 46% 54%,#FFFFFF 54% 100%)}
 .byline{margin:0;align-self:flex-end;font-family:var(--font-num);font-weight:700;font-size:12px;letter-spacing:.12em;color:var(--muted);white-space:nowrap}
 .byline b{font-weight:800;color:var(--pink)}
-/* opening animation (V43): letters drop in and bounce, the sticker pops, the rally line draws itself */
+/* opening animation (V43): letters drop in and bounce, then the sticker pops */
 .hero.intro .wordmark .ch,.hero.intro .sticker{opacity:0}
-.hero.intro .squiggle path{stroke-dasharray:1;stroke-dashoffset:1}
 .hero.play .wordmark .ch{animation:rn-drop 1s both;animation-delay:calc(var(--i) * 65ms)}
 .hero.play .sticker{animation:rn-pop .55s cubic-bezier(.34,1.56,.64,1) both;animation-delay:.95s}
-.hero.play .squiggle path{animation:rn-draw .9s ease-out both;animation-delay:.55s}
 @keyframes rn-drop{
   0%{opacity:0;transform:translateY(-95%) scale(.92,1.12);animation-timing-function:cubic-bezier(.55,0,1,.45)}
   14%{opacity:1}
@@ -75,7 +71,6 @@ h2.sec .en{font-size:24px;letter-spacing:.02em;color:var(--ink)}
   100%{opacity:1;transform:none}
 }
 @keyframes rn-pop{0%{opacity:0;transform:rotate(-70deg) scale(0)}100%{opacity:1;transform:rotate(-12deg) scale(1)}}
-@keyframes rn-draw{to{stroke-dashoffset:0}}
 
 /* buttons */
 .cta{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:64px;border:0;border-radius:var(--r);background:var(--teal);color:var(--on-teal);font-size:18px;font-weight:900;letter-spacing:.04em}
@@ -435,7 +430,6 @@ var STICKER = '<div class="sticker" aria-hidden="true"><svg viewBox="-4 -4 108 1
   '<path id="rn-ring" d="M50 50m-31 0a31 31 0 1 1 62 0a31 31 0 1 1 -62 0" fill="none"/>'+
   '<text><textPath href="#rn-ring" textLength="190" lengthAdjust="spacing">LET\u2019S RALLY! \u2605 LET\u2019S RALLY! \u2605</textPath></text>'+
   '<text class="mid" x="50" y="48" text-anchor="middle">SCORE</text><text class="mid" x="50" y="62" text-anchor="middle">SHEET</text></svg></div>';
-var SQUIGGLE = '<svg class="squiggle" viewBox="0 0 300 260" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M10 104C46 102 92 96 122 84C150 72 162 54 146 50C128 46 126 80 160 88C196 96 222 80 246 64"/></svg>';
 function wordmarkHTML(){
   var i = 0;
   function ch(c, cls){ return '<span class="ch'+(cls?" "+cls:"")+'" style="--i:'+(i++)+'">'+c+'</span>'; }
@@ -507,7 +501,7 @@ function renderHome(){
       (isReady(m) ? '<span class="go">タップして開始 ›</span>' : '<span class="scs'+(gs.length<=1?" big":"")+'" aria-label="スコア '+esc(scoreLine(m)||"0-0")+'">'+scs+'</span>')+'</span></button></li>';
   }).join("");
   $("#v-home").innerHTML =
-    '<header class="hero"><div class="poster"><p class="poster-top">Badminton<br>score sheet</p>'+SQUIGGLE+STICKER+wordmarkHTML()+'</div><p class="byline">by <b>KINASHI BADMINTON Jr.</b></p></header>'+
+    '<header class="hero"><div class="poster"><p class="poster-top">Badminton<br>score sheet</p>'+STICKER+wordmarkHTML()+'</div><p class="byline">by <b>KINASHI BADMINTON Jr.</b></p></header>'+
     (inApp() ? '<div class="inapp"><b>LINEなどのアプリの中で開いています</b><span>記録が残らないことがあります。右上（または右下）のメニューから「ブラウザで開く」を選んで、Safari や Chrome で使ってください。</span></div>' : "")+
     '<button class="cta ink" data-act="new"><span class="plus" aria-hidden="true">+</span>新しい試合をはじめる</button>'+
     '<div class="sec-row"><h2 class="sec"><span class="en">Matches</span>記録した試合</h2>'+(items?'<span class="swipe-hint">← スワイプで削除</span>':"")+'</div>'+
