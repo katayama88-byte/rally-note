@@ -1,0 +1,1028 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><meta name="theme-color" content="#FFFFFF"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="RALLY NOTE"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="format-detection" content="telephone=no"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><link rel="icon" href="icon-192.png"><title>RALLY NOTE</title></head><body>
+<title>RALLY NOTE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@500;600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap">
+<style>
+/* Layout: "SCOREBOARD" white (案C白, V29; mobile hardening V33; standalone web V34; name/team suggestions V35) — white ground, flat light-grey cards, rounded-rect controls; bright teal (A / primary) and bright pink (B) from the club logo; score mode = two deep-tinted panels with numbers in logo teal / deep pink. The printed sheet stays white paper. */
+:root{
+  --bg:#FFFFFF; --surface:#F1F6F6; --field:#FFFFFF; --ink:#142625; --muted:#5E7372; --line:#DCE7E6;
+  --teal:#058687; --on-teal:#FFFFFF; --teal-tint:#DCEEEE; --teal-ink:#046A6B;
+  --pink:#C2476A; --pink-dot:#DC6B88; --pink-tint:#FBE7ED; --pink-ink:#9E3B5A;
+  --court:var(--teal-tint); --rival:var(--pink-tint); --score-bg:#FFFFFF;
+  --danger:#C2364E; --danger-fill:#B8314A; --focus:#058687;
+  /* paper tokens: the printed sheet is always white paper */
+  --paper:#FFFFFF; --paper-ink:#142625; --paper-muted:#5E7372; --paper-line:#CBD8D7; --paper-soft:#F0F6F6; --paper-court:#058687; --paper-rival:#C2557A;
+  --font-ui:"Zen Kaku Gothic New","Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP","Yu Gothic",system-ui,sans-serif;
+  --font-num:"Jost","Futura","Avenir Next","Century Gothic","Helvetica Neue",sans-serif;
+  --r:20px; --r-sm:14px; --r-btn:16px;
+  color-scheme:light;
+}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-ui);font-size:16px;line-height:1.6;-webkit-tap-highlight-color:transparent}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;touch-action:manipulation}
+/* --- mobile hardening (V33): no sideways drift, no bounce, no accidental zoom --- */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;overflow-x:hidden;overflow-x:clip;overscroll-behavior:none;touch-action:manipulation}
+body{overflow-x:hidden;overflow-x:clip;overscroll-behavior:none;overflow-wrap:break-word;width:100%;max-width:100%;position:relative}
+html.lock,html.lock body{overflow:hidden;overscroll-behavior:none}
+button,a,label,.side{-webkit-touch-callout:none}
+button,label,.seg,.chip,.eyebrow,.en{-webkit-user-select:none;user-select:none}
+.btn:active,.ibtn:active,.undo:active,.seg label:active,.sug-pick:active{filter:brightness(.95)}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.app{max-width:720px;margin:0 auto;padding-inline:max(16px,env(safe-area-inset-left,0px)) max(16px,env(safe-area-inset-right,0px));padding-block:16px 56px;box-sizing:border-box;width:100%;min-width:0;display:flex;flex-direction:column;gap:20px}
+.app>section{display:flex;flex-direction:column;gap:20px;min-width:0}
+.eyebrow{font-family:var(--font-num);font-weight:600;letter-spacing:.18em;text-transform:uppercase;font-size:12px;color:var(--teal);margin:0}
+h2.sec{white-space:nowrap;font-size:15px;font-weight:700;margin:0;color:var(--ink);display:flex;align-items:baseline;gap:10px}
+.en{font-family:var(--font-num);font-weight:600;font-size:11px;letter-spacing:.18em;color:var(--muted);text-transform:uppercase}
+.fine{font-size:13px;color:var(--muted);margin:0;line-height:1.7}
+
+/* hero */
+.hero{display:flex;flex-direction:column;gap:8px;padding:12px 4px 0}
+.wordmark{font-family:var(--font-num);font-weight:700;font-size:clamp(32px,12.5vw,68px);white-space:nowrap;max-width:100%;overflow:hidden;line-height:.95;letter-spacing:.01em;margin:0;color:var(--ink);display:flex;align-items:center}
+.wordmark .dot{display:inline-block;width:.74em;height:.74em;border-radius:50%;margin:0 .03em;background:linear-gradient(var(--pink) 0 47%,transparent 47% 53%,var(--teal) 53% 100%);flex:none}
+
+/* buttons */
+.cta{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:64px;border:0;border-radius:var(--r);background:var(--teal);color:var(--on-teal);font-size:18px;font-weight:900;letter-spacing:.04em}
+.cta:active{transform:scale(.99)}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:56px;border:0;border-radius:var(--r-btn);background:var(--surface);font-size:16px;font-weight:700;color:var(--ink)}
+.row2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
+.link-danger{background:none;border:0;color:var(--danger);font-weight:700;font-size:15px;padding:12px;align-self:center}
+.back{align-self:flex-start;background:none;border:0;font-size:15px;font-weight:700;padding:8px 2px;color:var(--muted)}
+button[disabled]{opacity:.5;cursor:default}
+
+/* list */
+.sec-row{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:4px 12px;margin-top:4px;padding:0 4px}
+.swipe-hint{font-size:12px;font-weight:700;color:var(--muted);white-space:nowrap}
+.list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.item{width:100%;display:flex;flex-direction:column;gap:6px;text-align:left;background:var(--surface);border:0;border-radius:var(--r);padding:16px;color:var(--ink)}
+.item .top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.item .dt{font-family:var(--font-num);font-weight:600;font-size:13px;letter-spacing:.12em;color:var(--teal-ink)}
+.item .t{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item .row{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin-top:2px}
+.item .names{display:flex;flex-direction:column;font-weight:700;font-size:16px;line-height:1.4;min-width:0;overflow-wrap:anywhere}
+.item .names .b{color:var(--muted);font-weight:500}
+.item .names>span{display:flex;align-items:baseline;min-width:0}
+.item .names .nx{flex:0 0 auto;max-width:100%;overflow-wrap:anywhere}
+.item .names .tm{flex:1 1 0;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:11px;font-weight:500;margin-left:.6em;letter-spacing:.02em}
+.item .names .a .tm{color:var(--teal-ink)} .item .names .b .tm{color:var(--pink-ink)}
+.item .scs{flex:none;display:flex;gap:10px;font-family:var(--font-num);font-weight:600;font-size:18px;line-height:1.25;text-align:center;font-variant-numeric:tabular-nums}
+.item .scs.big{font-size:24px}
+.item .scs>span{display:flex;flex-direction:column;min-width:1.4em}
+.item .scs i{font-style:normal;color:var(--muted)}
+.item .scs i.wa{color:var(--teal)} .item .scs i.wb{color:var(--pink)}
+.chip{font-size:12px;font-weight:700;white-space:nowrap;color:var(--muted);display:inline-flex;align-items:center;gap:6px}
+.chip.live{color:var(--pink-ink)}
+.chip.live::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--pink-dot)}
+.empty{background:var(--surface);border-radius:var(--r);padding:28px 20px;text-align:center;color:var(--muted)}
+
+/* swipe to delete (home list) */
+li.swipe{position:relative;border-radius:var(--r);overflow:hidden}
+li.swipe .swipe-act{position:absolute;top:0;right:0;bottom:0;width:100%;display:flex;justify-content:flex-end;background:var(--danger-fill);visibility:hidden}
+li.swipe.off .swipe-act{visibility:visible}
+.swipe-del{width:96px;border:0;background:none;color:#fff;font-weight:700;font-size:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+li.swipe .item{position:relative;touch-action:pan-y;transition:transform .22s ease-out;will-change:transform}
+li.swipe.drag .item{transition:none}
+li.swipe.gone{transition:height .22s ease-out,opacity .22s;opacity:0}
+
+/* form */
+form{display:flex;flex-direction:column;gap:12px}
+fieldset{border:0;margin:0;padding:18px 16px;display:flex;flex-direction:column;gap:14px;min-width:0;background:var(--surface);border-radius:var(--r)}
+legend{float:left;width:100%;font-size:15px;font-weight:900;margin:0;padding:0;letter-spacing:.04em;display:flex;flex-direction:column;gap:0}
+legend .en.a{color:var(--teal-ink)} legend .en.b{color:var(--pink-ink)}
+legend+*{clear:both}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field label,.lbl{font-size:13px;font-weight:700;color:var(--muted)}
+.field input:not([type=radio]),.field select,.field textarea{-webkit-appearance:none;appearance:none;min-height:52px;border:1.5px solid transparent;border-radius:var(--r-sm);background:var(--field);padding:10px 14px;font-size:17px;width:100%;min-width:0;box-sizing:border-box}
+.field input::placeholder,.field textarea::placeholder{color:#8A9C9B}
+.field input:focus,.field textarea:focus{outline:none;border-color:var(--teal)}
+.field textarea{min-height:84px;resize:vertical}
+.field input[type=date],.field input[type=time]{display:block;max-width:100%;text-align:left;line-height:30px}
+.field input::-webkit-date-and-time-value{text-align:left;margin:0}
+.field input[type=number],.step input{-moz-appearance:textfield;appearance:textfield}
+.field input::-webkit-inner-spin-button,.field input::-webkit-outer-spin-button,.step input::-webkit-inner-spin-button,.step input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+.seg{position:relative;display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:8px;min-width:0}
+.seg input{position:absolute;left:0;top:0;width:1px;height:1px;min-height:0;margin:0;padding:0;border:0;opacity:0;pointer-events:none;overflow:hidden}
+.seg label{min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:52px;border-radius:var(--r-btn);border:2px solid transparent;background:var(--field);font-size:16px;font-weight:700;color:var(--ink);text-align:center;line-height:1.25;padding:6px 8px;box-sizing:border-box}
+.seg label small{font-size:12px;font-weight:500;margin-top:2px;color:var(--muted)}
+.seg input:checked+label{background:var(--teal-tint);border-color:var(--teal);color:var(--ink)}
+.seg input:checked+label small{color:var(--teal-ink)}
+.seg input:focus-visible+label{outline:3px solid var(--focus);outline-offset:2px}
+.seg input:disabled+label{opacity:.5}
+.seg.v{grid-auto-flow:row}
+.badge{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:9px;font-family:var(--font-num);font-weight:700;font-size:16px;color:#FFFFFF;flex:none}
+.badge.a{background:var(--teal)} .badge.b{background:var(--pink-dot)}
+form[data-type="S"] .only-d{display:none}
+details{background:var(--surface);border:0;border-radius:var(--r);padding:2px 16px}
+details summary{font-weight:700;padding:14px 0;cursor:pointer}
+details[open]{padding-bottom:16px}
+details .inner{display:flex;flex-direction:column;gap:14px}
+form>.cta{margin-top:8px}
+
+/* score mode */
+.score{position:fixed;inset:0;background:var(--score-bg);display:flex;flex-direction:column;gap:10px;padding:calc(env(safe-area-inset-top,0px) + 10px) calc(env(safe-area-inset-right,0px) + 12px) calc(env(safe-area-inset-bottom,0px) + 12px) calc(env(safe-area-inset-left,0px) + 12px);z-index:10;box-sizing:border-box;overflow:hidden;overscroll-behavior:none;touch-action:manipulation;-webkit-user-select:none;user-select:none}
+.sbar{display:flex;align-items:center;gap:6px;min-width:0}
+.ibtn{flex:none;min-width:46px;height:46px;border-radius:var(--r-sm);border:0;background:var(--surface);font-size:15px;font-weight:700;padding:0 11px;white-space:nowrap;color:var(--ink)}
+.stitle{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;text-align:center;line-height:1.25}
+.stitle strong{font-family:var(--font-num);font-weight:700;font-size:17px;letter-spacing:.14em;color:var(--ink);white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.stitle span{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.gbar{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;text-align:center;font-family:var(--font-num);font-weight:600;font-size:13px;letter-spacing:.14em}
+.gbar span{background:var(--surface);border-radius:12px;padding:7px 0}
+.gbar .a{color:var(--teal-ink)} .gbar .b{color:var(--pink-ink)}
+.gbar.swapped .a{order:2}
+.court{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:minmax(0,1fr);gap:8px}
+.court.swapped .side.a{order:2}
+.side{position:relative;border:0;border-radius:24px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:20px 10px;min-width:0;min-height:0;overflow:hidden;user-select:none;-webkit-user-select:none;color:var(--ink);container-type:size}
+.side.a{background:var(--court)}
+.side.b{background:var(--rival)}
+.side.hit{animation:hit .22s ease-out}
+@keyframes hit{0%{transform:scale(.97)}100%{transform:scale(1)}}
+.side .who{display:flex;flex-direction:column;align-items:center;text-align:center;gap:2px;min-width:0;max-width:100%}
+.side .nm{font-size:18px;font-weight:900;line-height:1.3;overflow-wrap:anywhere}
+.side .tm{font-size:12px}
+.side.a .tm,.side.a .tap-hint{color:var(--teal-ink)} .side.b .tm,.side.b .tap-hint{color:var(--pink-ink)}
+.side .pts{font-family:var(--font-num);font-weight:600;font-size:clamp(100px,34vw,280px);font-size:clamp(56px,min(70cqw,52cqh),280px);line-height:.88;font-variant-numeric:tabular-nums;letter-spacing:-.03em}
+.side.a .pts{color:var(--teal)} .side.b .pts{color:var(--pink)}
+.side .ft{display:flex;flex-direction:column;align-items:center;gap:8px}
+.srv{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:900;padding:6px 14px;border-radius:99px;background:var(--teal);color:var(--on-teal);visibility:hidden}
+.side.b .srv{background:var(--pink)}
+.srv.on{visibility:visible}
+.tap-hint{font-size:12px}
+.sfoot{display:flex;align-items:stretch;gap:10px}
+.undo{flex:1;min-height:56px;border-radius:var(--r-btn);border:0;background:var(--surface);font-size:17px;font-weight:700;color:var(--ink)}
+.hist{display:flex;flex-direction:column;justify-content:center;gap:0;font-family:var(--font-num);font-size:15px;font-weight:600;color:var(--muted);line-height:1.3;background:var(--surface);border-radius:var(--r-sm);padding:4px 14px;white-space:nowrap}
+.hist:empty{display:none}
+.gate{position:absolute;inset:0;background:rgba(255,255,255,.9);background:color-mix(in srgb,var(--score-bg) 86%,transparent);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);display:flex;align-items:flex-start;justify-content:center;padding:calc(env(safe-area-inset-top,0px) + 20px) 20px calc(env(safe-area-inset-bottom,0px) + 20px);z-index:2;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;box-sizing:border-box}
+.gate-card{margin:auto;background:var(--surface);border:0;border-radius:24px;padding:26px 22px;width:100%;max-width:400px;display:flex;flex-direction:column;gap:14px;text-align:center}
+.gate-card .big{font-family:var(--font-num);font-weight:600;font-size:72px;line-height:1;margin:0;font-variant-numeric:tabular-nums;color:var(--ink)}
+.gate-card p{margin:0}
+.gate-card .who-won{font-weight:700;font-size:18px}
+.gate-card .btn{background:var(--field)}
+
+/* sheet preview */
+.frame{width:100%;max-width:100%;overflow:hidden;contain:paint;border-radius:16px;background:var(--paper)}
+.scaler{width:794px;transform-origin:0 0}
+.confirm{background:var(--surface);border:1.5px solid var(--danger);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:12px;text-align:center}
+.confirm .btn{background:var(--field)}
+
+/* the printable sheet (A4 @ 96dpi) */
+.sheet{overflow-wrap:break-word;width:794px;min-height:1123px;box-sizing:border-box;padding:44px 40px 36px;background:var(--paper);color:var(--paper-ink);font-family:var(--font-ui);font-size:13px;line-height:1.5;display:flex;flex-direction:column;gap:18px}
+.sheet .hd{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:3px solid var(--paper-ink);padding-bottom:12px;gap:20px}
+.sheet .hd .k{font-family:var(--font-num);font-weight:600;letter-spacing:.2em;font-size:12px;color:var(--paper-muted)}
+.sheet .hd h1{margin:2px 0 0;font-size:24px;font-weight:900;line-height:1.3}
+.sheet .mark{font-family:var(--font-num);font-weight:700;font-size:20px;letter-spacing:.04em;color:var(--paper-court);white-space:nowrap}
+.sheet table{border-collapse:collapse;width:100%}
+.sheet .meta{table-layout:fixed}
+.sheet .meta td{border:1px solid var(--paper-line);padding:6px 10px;vertical-align:top}
+.sheet .meta .l{display:block;font-size:10px;font-weight:700;color:var(--paper-muted);letter-spacing:.08em}
+.sheet .meta .v{font-size:14px;font-weight:700;min-height:21px;display:block}
+.sheet .vs{display:grid;grid-template-columns:1fr 70px 1fr;align-items:stretch;gap:0;border:1px solid var(--paper-line)}
+.sheet .pl{padding:14px 16px;display:flex;flex-direction:column;gap:4px;position:relative}
+.sheet .pl.b{text-align:right}
+.sheet .pl .tag{font-family:var(--font-num);font-weight:700;font-size:13px;letter-spacing:.12em}
+.sheet .pl.a .tag{color:var(--paper-court)} .sheet .pl.b .tag{color:var(--paper-rival)}
+.sheet .pl .n{font-size:18px;font-weight:900;line-height:1.35}
+.sheet .pl .t{font-size:12px;color:var(--paper-muted)}
+.sheet .pl .won{font-family:var(--font-num);font-weight:700;font-size:12px;letter-spacing:.14em;color:#fff;padding:2px 10px;border-radius:99px;align-self:flex-start}
+.sheet .pl.b .won{align-self:flex-end}
+.sheet .pl.a .won{background:var(--paper-court)} .sheet .pl.b .won{background:var(--paper-rival)}
+.sheet .mid{display:flex;align-items:center;justify-content:center;font-family:var(--font-num);font-weight:600;font-size:32px;background:var(--paper-soft);border-inline:1px solid var(--paper-line);font-variant-numeric:tabular-nums}
+.sheet .res th,.sheet .res td{border:1px solid var(--paper-line);padding:6px 8px;text-align:center}
+.sheet .res th{font-size:11px;font-weight:700;color:var(--paper-muted);background:var(--paper-soft)}
+.sheet .res td{font-family:var(--font-num);font-size:22px;font-weight:600;font-variant-numeric:tabular-nums}
+.sheet .res td.nm{font-family:var(--font-ui);font-size:13px;font-weight:700;text-align:left;width:34%}
+.sheet .res td.w{background:var(--paper-soft);font-weight:700}
+.sheet .gm{display:flex;flex-direction:column;gap:6px}
+.sheet .gm .gt{display:flex;justify-content:space-between;gap:12px;font-size:12px;color:var(--paper-muted)}
+.sheet .gm .gt b{color:var(--paper-ink);font-size:13px}
+.sheet .strip td{border:1px solid var(--paper-line);width:22px;height:21px;padding:0;text-align:center;font-family:var(--font-num);font-size:13px;font-weight:600;font-variant-numeric:tabular-nums}
+.sheet .strip td.s{width:28px;font-size:11px;font-weight:700;letter-spacing:.06em;background:var(--paper-soft)}
+.sheet .strip tr.ra td.on{color:var(--paper-court)} .sheet .strip tr.rb td.on{color:var(--paper-rival)}
+.sheet .strip td.sr{color:var(--paper-ink);font-weight:700;background:var(--paper-soft)}
+.sheet .strip{margin-bottom:4px;table-layout:fixed;width:auto}
+.sheet .note{border:1px solid var(--paper-line);padding:8px 12px;min-height:44px;white-space:pre-wrap}
+.sheet .note .l{display:block;font-size:10px;font-weight:700;color:var(--paper-muted);letter-spacing:.08em}
+.sheet .stamp{white-space:nowrap;flex:none;border:2px solid var(--paper-rival);color:var(--paper-rival);font-weight:900;padding:2px 10px;border-radius:99px;font-size:12px}
+.sheet .foot{margin-top:auto;display:flex;justify-content:space-between;font-size:11px;color:var(--paper-muted);border-top:1px solid var(--paper-line);padding-top:8px}
+.sheet .legend{font-size:11px;color:var(--paper-muted)}
+
+/* rules + point editor */
+form:not([data-pmode="free"]) .only-free{display:none}
+form:not([data-deuce="1"]) .only-deuce{display:none}
+form[data-mode="result"] .only-rally{display:none}
+form:not([data-mode="result"]) .only-result{display:none}
+.btn small{font-weight:500;color:var(--muted);font-size:13px}
+a.btn{text-decoration:none;color:var(--ink);box-sizing:border-box}
+.topnav{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:0 8px}
+.back.info{color:var(--teal)}
+.sug{display:flex;flex-direction:column;border-radius:var(--r-sm);background:var(--field);overflow:hidden}
+.sug-h{font-size:12px;font-weight:700;color:var(--muted);padding:8px 14px 4px}
+.sug-row{display:flex;border-top:1px solid var(--line)}
+.sug-pick{flex:1;min-width:0;display:flex;align-items:center;gap:8px;text-align:left;min-height:48px;padding:10px 14px;border:0;background:none;font-size:16px;font-weight:500;overflow-wrap:anywhere;color:var(--ink)}
+.sug-pick svg{flex:none;color:var(--teal)}
+.sug-del{flex:none;width:52px;border:0;border-left:1px solid var(--line);background:none;color:var(--muted);font-size:22px;line-height:1}
+.ecard{background:var(--surface);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:12px}
+.ecard h3{margin:0;font-size:16px;font-weight:900;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.ecard .chip.done{color:var(--teal)}
+.erow{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:10px}
+.erow .who{display:flex;align-items:center;gap:8px;min-width:0;font-weight:700;overflow-wrap:anywhere}
+.step{display:grid;grid-template-columns:50px 72px 50px;gap:6px}
+.step button{height:50px;border-radius:var(--r-sm);border:0;background:var(--field);font-size:24px;font-weight:700;line-height:1;color:var(--ink)}
+.step input{height:50px;border-radius:var(--r-sm);border:1.5px solid transparent;background:var(--field);text-align:center;font-family:var(--font-num);font-size:26px;font-weight:600;width:100%;box-sizing:border-box;font-variant-numeric:tabular-nums}
+.step input:focus{outline:none;border-color:var(--teal)}
+.ecard .note{font-size:13px;color:var(--muted);margin:0}
+.mini{background:none;border:0;color:var(--danger);font-size:13px;font-weight:700;padding:6px}
+.frame .res td[data-act]{cursor:pointer;box-shadow:inset 0 -3px 0 var(--paper-line)}
+@media (hover:hover){.frame .res td[data-act]:hover{background:var(--paper-soft)}}
+.cell-head{display:flex;align-items:center;gap:10px;font-weight:900;font-size:18px;overflow-wrap:anywhere}
+.step.lg{grid-template-columns:72px minmax(0,1fr) 72px;align-self:stretch}
+.step.lg button,.step.lg input{height:72px;font-size:32px}
+.end-list{display:flex;flex-direction:column;gap:10px}
+#capture{position:absolute;left:-12000px;top:0;width:794px;pointer-events:none}
+#toast{box-sizing:border-box;width:max-content;position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 96px);transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:12px 20px;border-radius:99px;font-weight:700;font-size:15px;z-index:50;max-width:calc(100% - 32px);text-align:center;opacity:0;transition:opacity .2s;pointer-events:none}
+#toast.show{opacity:1}
+#toast.has-act.show{pointer-events:auto;display:flex;align-items:center;gap:14px;padding:8px 8px 8px 20px;white-space:nowrap}
+#toast .t-act{border:0;border-radius:99px;background:var(--teal);color:#FFFFFF;font-weight:700;font-size:15px;padding:8px 16px;min-height:40px}
+.modal{overscroll-behavior:contain;-webkit-overflow-scrolling:touch;position:fixed;inset:0;background:color-mix(in srgb,var(--bg) 88%,transparent);z-index:40;overflow:auto;padding:calc(env(safe-area-inset-top,0px) + 16px) 16px calc(env(safe-area-inset-bottom,0px) + 16px);box-sizing:border-box}
+.modal .box{max-width:620px;margin:0 auto;background:var(--surface);border-radius:var(--r);padding:18px;display:flex;flex-direction:column;gap:12px}
+.modal .box .btn{background:var(--field)}
+.modal img{width:100%;border:1px solid var(--line);border-radius:8px}
+/* small phones (iPhone SE etc.) */
+@media (max-width:360px){
+  .ibtn{min-width:42px;padding:0 8px;font-size:14px}
+  .stitle strong{font-size:15px;letter-spacing:.1em}
+  .step{grid-template-columns:44px 60px 44px}
+  .step button,.step input{height:46px}
+  .seg label{font-size:15px;padding:6px 4px}
+  .erow{grid-template-columns:auto minmax(0,1fr);row-gap:8px}
+  .erow .step{grid-column:1/-1;grid-template-columns:56px minmax(0,1fr) 56px}
+}
+/* phone held sideways: keep the whole score screen on one screen */
+@media (orientation:landscape) and (max-height:500px){
+  .score{gap:8px;padding-top:calc(env(safe-area-inset-top,0px) + 6px);padding-bottom:calc(env(safe-area-inset-bottom,0px) + 8px)}
+  .ibtn{height:40px}
+  .gbar span{padding:3px 0}
+  .side{padding:10px;border-radius:18px}
+  .tap-hint{display:none}
+  .undo{min-height:46px}
+  .gate-card{padding:18px;gap:10px}
+  .gate-card .big{font-size:48px}
+}
+.inapp{background:var(--pink-tint);border-radius:var(--r);padding:14px 16px;display:flex;flex-direction:column;gap:4px;font-size:13px;line-height:1.6;color:var(--ink)}
+.inapp b{color:var(--pink-ink);font-size:14px}
+@media (prefers-reduced-motion: reduce){.side.hit{animation:none}#toast{transition:none}li.swipe .item,li.swipe.gone{transition:none}}
+</style>
+
+<div class="app">
+  <section id="v-home"></section>
+  <section id="v-setup" hidden></section>
+  <section id="v-sheet" hidden></section>
+  <section id="v-edit" hidden></section>
+</div>
+<section id="v-score" class="score" hidden></section>
+<div id="capture" aria-hidden="true"></div>
+<div id="modal" class="modal" hidden></div>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+(function(){
+"use strict";
+var KEY = "rallynote.v1";
+var WD = ["日","月","火","水","木","金","土"];
+var WE = ["SUN","MON","TUE","WED","THU","FRI","SAT"];
+var $ = function(s){ return document.querySelector(s); };
+
+/* ---------- storage (this device only) ---------- */
+function load(){ try { return JSON.parse(localStorage.getItem(KEY) || "null"); } catch(e){ return null; } }
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(db)); } catch(e){} }
+var db = load() || { matches: [] };
+if (!db.matches) db.matches = [];
+if (!db.hiddenVenues) db.hiddenVenues = []; /* 候補から外した会場名 */
+if (!db.hiddenTours) db.hiddenTours = []; /* 候補から外した大会名 */
+if (!db.hiddenNames) db.hiddenNames = []; /* 候補から外した選手名（A・B共通） */
+if (!db.hiddenTeams) db.hiddenTeams = []; /* 候補から外したチーム名（A・B共通） */
+if (!db.seeded && !db.matches.length){ db.matches.push(sampleMatch()); db.seeded = true; save(); }
+db.matches.forEach(function(m){ /* older records: fill in new rule fields */
+  if (m.meta.deuce === undefined){ m.meta.deuce = true; m.meta.cap = m.meta.points === 21 ? 30 : null; }
+});
+
+var sugTouch = 0;
+var view = "home", curId = null, editingId = null, confirmDel = false, wake = null, endAsk = false, presetMode = null;
+function isResult(m){ return !!(m && m.mode === "result"); }
+function openView(m){ return m.status==="done" ? "sheet" : (isResult(m) ? "edit" : "score"); }
+
+/* ---------- helpers ---------- */
+function esc(s){ return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]; }); }
+function pad(n){ return String(n).padStart(2,"0"); }
+function todayStr(d){ d = d || new Date(); return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate()); }
+function timeStr(d){ d = d || new Date(); return pad(d.getHours())+":"+pad(d.getMinutes()); }
+function fmtDateJP(s){ if(!s) return "—"; var p = s.split("-"); var d = new Date(+p[0], +p[1]-1, +p[2]); if (isNaN(d)) return s; return p[0]+"年"+(+p[1])+"月"+(+p[2])+"日（"+WD[d.getDay()]+"）"; }
+/* 大会名が空欄なら日付、日付も空欄なら fb を出す */
+function titleOf(M, fb){ return M.tournament || (M.date ? fmtDateJP(M.date) : fb); }
+function uid(){ return "m" + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+function cur(){ for (var i=0;i<db.matches.length;i++) if (db.matches[i].id === curId) return db.matches[i]; return null; }
+function find(id){ for (var i=0;i<db.matches.length;i++) if (db.matches[i].id === id) return db.matches[i]; return null; }
+
+/* ---------- scoring rules ---------- */
+function tally(g){ var a=0,b=0; g.rallies.forEach(function(r){ if (r==="A") a++; else b++; }); return {a:a,b:b}; }
+function gameOver(m,g){
+  var M=m.meta, t=tally(g), hi=Math.max(t.a,t.b), lo=Math.min(t.a,t.b);
+  if (hi < M.points) return false;
+  if (!M.deuce) return true;                 /* 延長なし：先に規定点 */
+  if (M.cap && hi >= M.cap) return true;     /* 延長あり＋上限点 */
+  return hi - lo >= 2;                       /* 延長あり：2点差 */
+}
+function ruleLabel(M){
+  return M.points+"点・"+(M.deuce ? "延長あり"+(M.cap ? "（上限"+M.cap+"点）" : "（上限なし）") : "延長なし")+"・"+(M.games===3 ? "3ゲーム" : "1ゲーム");
+}
+function gameWinner(m,g){ if(!gameOver(m,g)) return null; var t=tally(g); return t.a>t.b ? "A" : "B"; }
+function wins(m){ var w={A:0,B:0}; m.games.forEach(function(g){ var x=gameWinner(m,g); if(x) w[x]++; }); return w; }
+function ivPoint(m){ return m.meta.points===21 ? 11 : (m.meta.points===15 ? 8 : 0); }
+function need(m){ return Math.ceil(m.meta.games/2); }
+function matchWinner(m){ if (m.result && m.result.type !== "normal") return m.result.winner || null; var w=wins(m), n=need(m); return w.A>=n ? "A" : (w.B>=n ? "B" : null); }
+function server(g){ return g.rallies.length ? g.rallies[g.rallies.length-1] : g.first; }
+function lastGame(m){ return m.games[m.games.length-1]; }
+
+function sideName(m,s){
+  var p = m.meta[s==="A"?"a":"b"], n = p.names.filter(function(x){ return x && x.trim(); });
+  if (m.meta.type === "D") return n.length ? n.join("・") : (s==="A"?"ペアA":"ペアB");
+  return n[0] || (s==="A"?"選手A":"選手B");
+}
+function scoreLine(m){
+  return m.games.filter(function(g){ return g.rallies.length; }).map(function(g){ var t=tally(g); return t.a+"-"+t.b; }).join("  ");
+}
+
+/* ---------- sample ---------- */
+function rng(seed){ return function(){ seed |= 0; seed = seed + 0x6D2B79F5 | 0; var t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function rallies(a,b,r){ var w = a>b ? "A" : "B", arr=[], i; for(i=0;i<(w==="A"?a-1:a);i++) arr.push("A"); for(i=0;i<(w==="B"?b-1:b);i++) arr.push("B"); for(i=arr.length-1;i>0;i--){ var j=Math.floor(r()*(i+1)); var t=arr[i]; arr[i]=arr[j]; arr[j]=t; } arr.push(w); return arr; }
+function sampleMatch(){
+  var r = rng(1013), d = new Date(Date.now() - 2*86400000); d.setHours(10,30,0,0);
+  var t0 = d.getTime(), spec=[[21,17],[19,21],[21,14]], first="A", games=[], t=t0+120000;
+  spec.forEach(function(s){ var g={ rallies: rallies(s[0],s[1],r), first:first, start:t, end:t + (14+Math.round(r()*6))*60000 }; games.push(g); t = g.end + 120000; first = s[0]>s[1] ? "A" : "B"; });
+  return { id:"sample", sample:true, created:t0, status:"done", startedAt:games[0].start, endedAt:games[2].end, swapped:false,
+    meta:{ tournament:"（サンプル）秋季ジュニアバドミントン大会", date:todayStr(d), time:"10:30", venue:"市総合体育館", court:"3", round:"2回戦", category:"小学4年以下 女子",
+      type:"S", a:{names:["山田 ひかり",""],team:"みなとジュニア"}, b:{names:["佐藤 みのり",""],team:"あおばクラブ"}, points:21, deuce:true, cap:30, games:3, recorder:"", note:"" },
+    result:{type:"normal"},
+    games:games };
+}
+
+/* ---------- icons ---------- */
+var TROPHY = '<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M7 4h10v5a5 5 0 0 1-10 0V4z"/><path d="M7 6H4v1a3 3 0 0 0 3 3M17 6h3v1a3 3 0 0 1-3 3M12 14v4M8 21h8M9 18h6"/></svg>';
+var TRASH = '<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg>';
+var PIN = '<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>';
+var SHUTTLE = '<svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3l6 11h2l6-11" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M9 3l3 11M15 3l-3 11" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="18" r="4" fill="currentColor"/></svg>';
+var COURT = '<svg class="lines" viewBox="0 0 670 305" preserveAspectRatio="xMidYMid slice" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="3">'+
+  '<rect x="2" y="2" width="666" height="301"/><line x1="0" y1="23" x2="670" y2="23"/><line x1="0" y1="282" x2="670" y2="282"/>'+
+  '<line x1="38" y1="0" x2="38" y2="305"/><line x1="632" y1="0" x2="632" y2="305"/><line x1="236" y1="0" x2="236" y2="305"/><line x1="434" y1="0" x2="434" y2="305"/>'+
+  '<line x1="0" y1="152.5" x2="236" y2="152.5"/><line x1="434" y1="152.5" x2="670" y2="152.5"/><line x1="335" y1="0" x2="335" y2="305" stroke-dasharray="6 6"/></svg>';
+
+/* ---------- views ---------- */
+function show(v, fromNav){
+  view = v;
+  if (v !== "score") endAsk = false;
+  var md = $("#modal"); if (md && !md.hidden){ md.hidden = true; md.innerHTML = ""; }
+  lockScroll();
+  if (!fromNav) navSync(v);
+  ["home","setup","sheet","score","edit"].forEach(function(k){ $("#v-"+k).hidden = (k !== v); });
+  if (v === "score") keepAwake(); else releaseWake();
+  render();
+  if (v !== "score") window.scrollTo(0,0);
+}
+/* 試合中の画面と小窓（モーダル）の間は、うしろのページが動かないように固定 */
+function lockScroll(){ document.documentElement.classList.toggle("lock", view === "score" || !$("#modal").hidden); }
+/* スマホの「戻る」：一覧以外の画面から戻ると一覧へ（アプリから抜けない） */
+var navIn = false, navSkip = 0;
+function navSync(v){
+  try {
+    if (v === "home"){ if (navIn){ navIn = false; navSkip = Date.now(); history.back(); } }
+    else if (!navIn){ history.pushState({ rn:"in" }, ""); navIn = true; }
+  } catch(e){}
+}
+window.addEventListener("popstate", function(e){
+  if (navSkip && Date.now() - navSkip < 1500){ navSkip = 0; return; }
+  navSkip = 0;
+  var inApp = !!(e.state && e.state.rn === "in");
+  if (inApp && view === "home"){ try { navSkip = Date.now(); history.back(); } catch(_){} return; }
+  navIn = inApp;
+  if (!inApp && view !== "home"){ confirmDel = false; editingId = null; show("home", true); }
+});
+function render(){
+  if (view==="home") renderHome();
+  else if (view==="setup") renderSetup();
+  else if (view==="sheet") renderSheet();
+  else if (view==="score") renderScore();
+  else if (view==="edit") renderEdit();
+}
+
+function renderHome(){
+  swOpen = null;
+  var list = db.matches.slice().sort(function(x,y){ return y.created - x.created; });
+  var items = list.map(function(m){
+    var p = (m.meta.date||"").split("-"), d = p.length===3 ? new Date(+p[0],+p[1]-1,+p[2]) : null;
+    var dt = p.length===3 ? (+p[1])+"."+(+p[2])+(d&&!isNaN(d) ? " "+WE[d.getDay()] : "") : "日付なし";
+    var chip = m.sample ? '<span class="chip">サンプル</span>' : (m.status==="done" ? '<span class="chip done">'+({retired:"リタイア",stopped:"途中終了"}[m.result && m.result.type] || "終了")+'</span>' : '<span class="chip live">'+(isResult(m)?"入力中":"試合中")+'</span>');
+    var gs = m.games.filter(function(g){ return g.rallies.length; });
+    var scs = (gs.length ? gs : [{rallies:[]}]).map(function(g){ /* 取った側（途中のゲームはリードしている側）の数字に色 */
+      var t = tally(g), w = g.rallies.length ? (gameWinner(m,g) || (t.a>t.b ? "A" : (t.b>t.a ? "B" : ""))) : "";
+      return '<span><i'+(w==="A"?' class="wa"':"")+'>'+t.a+'</i><i'+(w==="B"?' class="wb"':"")+'>'+t.b+'</i></span>';
+    }).join("");
+    return '<li class="swipe" data-id="'+m.id+'"><div class="swipe-act"><button class="swipe-del" data-act="swipe-del" data-id="'+m.id+'" aria-label="この試合を削除">'+TRASH+'削除</button></div><button class="item" data-act="open" data-id="'+m.id+'">'+
+      '<span class="top"><span class="dt">'+dt+'</span>'+chip+'</span>'+
+      '<span class="t">'+esc(titleOf(m.meta,"大会名なし"))+' · '+(m.meta.type==="D"?"ダブルス":"シングルス")+'</span>'+
+      '<span class="row"><span class="names"><span class="a"><span class="nx">'+esc(sideName(m,"A"))+'</span>'+(m.meta.a.team?'<small class="tm">'+esc(m.meta.a.team)+'</small>':"")+'</span><span class="b"><span class="nx">'+esc(sideName(m,"B"))+'</span>'+(m.meta.b.team?'<small class="tm">'+esc(m.meta.b.team)+'</small>':"")+'</span></span>'+
+      '<span class="scs'+(gs.length<=1?" big":"")+'" aria-label="スコア '+esc(scoreLine(m)||"0-0")+'">'+scs+'</span></span></button></li>';
+  }).join("");
+  $("#v-home").innerHTML =
+    '<header class="hero"><p class="eyebrow">Badminton score sheet</p><h1 class="wordmark" aria-label="RALLY NOTE">RALLY N<span class="dot" aria-hidden="true"></span>TE</h1></header>'+
+    (inApp() ? '<div class="inapp"><b>LINEなどのアプリの中で開いています</b><span>記録が残らないことがあります。右上（または右下）のメニューから「ブラウザで開く」を選んで、Safari や Chrome で使ってください。</span></div>' : "")+
+    '<button class="cta" data-act="new"><span style="font-size:24px;line-height:1">＋</span>新しい試合をはじめる</button>'+
+    '<div class="sec-row"><h2 class="sec"><span class="en">Matches</span>記録した試合</h2>'+(items?'<span class="swipe-hint">← スワイプで削除</span>':"")+'</div>'+
+    (items ? '<ul class="list">'+items+'</ul>' : '<div class="empty">まだ記録がありません。<br>「新しい試合をはじめる」から記録できます。</div>')+
+    '<p class="fine" style="font-size:11px;line-height:1.6;padding:0 4px">記録はこの端末のこのブラウザの中だけに保存されます。別のスマホや家族とは自動では共有されないので、試合が終わったらスコアシートをPDFか画像で保存して送ってください。</p>';
+}
+
+function inApp(){ var u = navigator.userAgent || ""; return / Line\/|FBAN|FBAV|Instagram|MicroMessenger/i.test(u); }
+function defaults(){
+  var last = db.matches.filter(function(m){ return !m.sample; }).sort(function(x,y){ return y.created-x.created; })[0];
+  var sameDay = last && last.meta.date === todayStr();
+  return { tournament: sameDay ? last.meta.tournament : "", date: todayStr(), time: timeStr(), venue: sameDay ? last.meta.venue : "", court:"", round:"", category: sameDay ? last.meta.category : "",
+    type:"S", a:{names:["",""],team: sameDay ? last.meta.a.team : ""}, b:{names:["",""],team:""},
+    points: sameDay ? last.meta.points : 15, deuce: sameDay ? last.meta.deuce : true, cap: sameDay ? last.meta.cap : null, games: sameDay ? last.meta.games : 3,
+    recorder: sameDay ? last.meta.recorder : "", note:"", first:"A",
+    mode: presetMode || (sameDay && last.mode === "result" ? "result" : "rally") };
+}
+function seg(name, opts, val, dis, vertical){
+  return '<div class="seg'+(vertical?" v":"")+'" role="radiogroup">'+opts.map(function(o,i){ var id="r-"+name+"-"+i; return '<input type="radio" id="'+id+'" name="'+name+'" value="'+o[0]+'"'+(String(o[0])===String(val)?" checked":"")+(dis?" disabled":"")+'><label for="'+id+'">'+o[1]+'</label>'; }).join("")+'</div>';
+}
+function inp(id,label,val,type,ph){ return '<div class="field"><label for="'+id+'">'+label+'</label><input id="'+id+'" type="'+(type||"text")+'" value="'+esc(val)+'"'+(ph?' placeholder="'+esc(ph)+'"':"")+(type==="number"?' inputmode="numeric" pattern="[0-9]*"':"")+' autocomplete="off"></div>'; }
+
+function renderSetup(){
+  var m = editingId ? find(editingId) : null, M = m ? m.meta : defaults();
+  var locked = !!(m && m.games.some(function(g){ return g.rallies.length; }));
+  var first = m ? m.games[0].first : "A", mode = m ? (m.mode || "rally") : M.mode;
+  $("#v-setup").innerHTML =
+    '<button class="back" data-act="'+(m?"cancel-edit":"home")+'">← '+(m?"もどる":"一覧")+'</button>'+
+    '<div><p class="eyebrow">'+(m?"Edit match":"New match")+'</p><h2 style="margin:2px 0 0;font-size:26px;font-weight:900">'+(m?"試合情報を編集":"試合の情報")+'</h2></div>'+
+    '<p class="fine" style="font-size:14px">すべて空欄のままでも先へ進めます。名前などはあとから編集できます。</p>'+
+    '<form id="f" data-type="'+M.type+'" data-pmode="'+(M.points===15?"15":"free")+'" data-deuce="'+(M.deuce?"1":"0")+'" data-mode="'+mode+'" novalidate>'+
+      (m ? "" : '<fieldset><legend><span class="en">Mode</span>記録のしかた</legend>'+seg("mode",[["rally","1点ずつ記録<br><small>試合中にタップ</small>"],["result","結果だけ入力<br><small>最終スコアのみ</small>"]],mode)+'</fieldset>')+
+      '<fieldset>'+
+        '<div class="field">'+inp("f-tour","大会名",M.tournament,"text","例：市民バドミントン大会")+
+          '<div id="tour-sug" class="sug" hidden></div></div>'+
+        '<div class="grid2">'+inp("f-date","日付",M.date,"date")+inp("f-time","開始時刻",M.time,"time")+'</div>'+
+        '<div class="field">'+inp("f-venue","場所（会場）",M.venue,"text","例：市総合体育館")+
+          '<div id="venue-sug" class="sug" hidden></div></div>'+
+        '<div class="grid2">'+inp("f-round","回戦",M.round,"text","例：1回戦")+
+        inp("f-cat","種目・区分",M.category,"text","例：小2以下")+'</div>'+
+      '</fieldset>'+
+      '<fieldset><legend><span class="en">Type</span>シングルス / ダブルス</legend>'+seg("type",[["S","シングルス"],["D","ダブルス"]],M.type)+'</fieldset>'+
+      ["a","b"].map(function(k){ var p=M[k], K=k.toUpperCase();
+        return '<fieldset class="player"><legend><span class="en '+k+'">Player '+K+'</span>'+(k==="a"?"こちら（自チーム）":"対戦相手")+'</legend>'+
+          sugField(k+"1", inp("f-"+k+"1",'<span class="only-d">選手1 </span>名前',p.names[0],"text","空欄でもOK"))+
+          '<div class="only-d">'+sugField(k+"2", inp("f-"+k+"2","選手2 名前",p.names[1],"text","空欄でもOK"))+'</div>'+
+          sugField(k+"team", inp("f-"+k+"team","チーム・学校名",p.team,"text","所属"))+'</fieldset>';
+      }).join("")+
+      '<fieldset><legend><span class="en">Rules</span>試合ルール</legend>'+
+        '<div class="field"><span class="lbl">1ゲームの点数</span>'+seg("pmode",[["15","15点"],["free","フリー"]],M.points===15?"15":"free")+'</div>'+
+        '<div class="only-free">'+inp("f-pfree","点数（フリー）",M.points===15?21:M.points,"number","例：21、30")+'</div>'+
+        '<div class="field"><span class="lbl">延長</span>'+seg("deuce",[["1","あり<br><small>2点差がつくまで</small>"],["0","なし<br><small>先に規定点で終了</small>"]],M.deuce?"1":"0")+'</div>'+
+        '<div class="only-deuce">'+inp("f-cap","上限点（空欄なら上限なし）",M.cap||"","number","例：30")+'</div>'+
+        '<div class="field"><span class="lbl">ゲーム数</span>'+seg("games",[["3","3ゲーム<br><small>2ゲーム先取</small>"],["1","1ゲーム"]],M.games)+'</div>'+
+        (locked?'<p class="fine">記録済みの点数は、新しいルールでゲーム終了かどうか判定し直されます。</p>':"")+
+      '</fieldset>'+
+      '<fieldset class="only-rally"><legend><span class="en">Serve</span>最初にサービスするのは</legend>'+seg("first",[["A","A（こちら）"],["B","B（相手）"]],first)+'</fieldset>'+
+      '<details><summary>記録者・メモ（任意）</summary><div class="inner">'+inp("f-rec","記録者",M.recorder,"text","例：保護者 山田")+
+        '<div class="field"><label for="f-note">メモ</label><textarea id="f-note" placeholder="気づいたこと、反省点など">'+esc(M.note)+'</textarea></div></div></details>'+
+      '<button class="cta" type="submit">'+(m?"保存する":'<span class="only-rally">試合開始（スコア入力へ）</span><span class="only-result">結果の入力へ</span>')+'</button>'+
+    '</form>';
+  var f = $("#f");
+  f.addEventListener("change", function(e){
+    if (e.target.name==="type") f.dataset.type = e.target.value;
+    if (e.target.name==="pmode") f.dataset.pmode = e.target.value;
+    if (e.target.name==="deuce") f.dataset.deuce = e.target.value;
+    if (e.target.name==="mode") f.dataset.mode = e.target.value;
+  });
+  Object.keys(SUG).forEach(function(k){ /* 大会名・会場・名前・チーム名を入れると、前に入力したものが候補に出る */
+    var c = SUG[k], el = $("#"+c.input), box = $("#"+k+"-sug");
+    el.addEventListener("input", function(){ showSug(k, el.value.trim()); });
+    el.addEventListener("focus", function(){ hideSugExcept(k); showSug(k, el.value.trim()); });
+    el.addEventListener("blur", function(){ setTimeout(function(){ if (box && Date.now() - sugTouch > 800) box.hidden = true; }, 200); });
+    box.addEventListener("pointerdown", function(){ sugTouch = Date.now(); });
+  });
+  f.addEventListener("submit", function(e){ e.preventDefault(); submitSetup(m, locked); });
+}
+/* 候補：この端末で前に入力した大会名・会場・名前・チーム名（新しい順、最大5件）。× で外したものは hidden* に入る。
+   名前とチーム名は A・B 共通の候補 */
+var PERSON = '<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>';
+var TEAM = '<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M15.5 4.6a3.5 3.5 0 0 1 0 6.8M18 14.2a6.5 6.5 0 0 1 3.5 5.8"/></svg>';
+var POOL = {
+  tour:  { hidden:"hiddenTours",  head:"前に入力した大会名",   icon:function(){ return TROPHY; }, vals:function(M){ return [M.tournament]; } },
+  venue: { hidden:"hiddenVenues", head:"前に入力した会場",     icon:function(){ return PIN; },    vals:function(M){ return [M.venue]; } },
+  name:  { hidden:"hiddenNames",  head:"前に入力した名前",     icon:function(){ return PERSON; }, vals:function(M){ return [M.a.names[0],M.a.names[1],M.b.names[0],M.b.names[1]]; }, uniq:true },
+  team:  { hidden:"hiddenTeams",  head:"前に入力したチーム名", icon:function(){ return TEAM; },   vals:function(M){ return [M.a.team,M.b.team]; } }
+};
+var SUG = {
+  tour:  { input:"f-tour",  pool:"tour" },  venue: { input:"f-venue", pool:"venue" },
+  a1:    { input:"f-a1",    pool:"name" },  a2:    { input:"f-a2",    pool:"name" },
+  b1:    { input:"f-b1",    pool:"name" },  b2:    { input:"f-b2",    pool:"name" },
+  ateam: { input:"f-ateam", pool:"team" },  bteam: { input:"f-bteam", pool:"team" }
+};
+function sugField(k, html){ return '<div class="field">'+html+'<div id="'+k+'-sug" class="sug" hidden></div></div>'; }
+function sugHistory(pk){
+  var P = POOL[pk], seen = {}, out = [];
+  db.matches.filter(function(m){ return !m.sample; }).sort(function(x,y){ return y.created - x.created; }).forEach(function(m){
+    P.vals(m.meta).forEach(function(x){
+      var v = (x || "").trim(); if (v && !seen[v] && db[P.hidden].indexOf(v) === -1){ seen[v] = 1; out.push(v); }
+    });
+  });
+  return out;
+}
+function showSug(k, q){
+  var c = SUG[k], P = POOL[c.pool], box = $("#"+k+"-sug"); if (!box) return;
+  var used = {}; /* 名前：同じ画面のほかの欄に入っている名前は出さない */
+  if (P.uniq) Object.keys(SUG).forEach(function(j){ if (j !== k && SUG[j].pool === c.pool){ var v = val(SUG[j].input); if (v) used[v] = 1; } });
+  var list = sugHistory(c.pool).filter(function(v){ return v !== q && !used[v] && (!q || v.indexOf(q) !== -1); }).slice(0,5);
+  if (!list.length){ box.hidden = true; box.innerHTML = ""; return; }
+  box.innerHTML = '<span class="sug-h">'+P.head+'（使わないものは × で削除）</span>' + list.map(function(v){
+    return '<div class="sug-row"><button type="button" class="sug-pick" data-act="sug-pick" data-k="'+k+'" data-v="'+esc(v)+'">'+P.icon()+'<span>'+esc(v)+'</span></button>'+
+      '<button type="button" class="sug-del" data-act="sug-del" data-k="'+k+'" data-v="'+esc(v)+'" aria-label="'+esc(v)+' を候補から削除">×</button></div>'; }).join("");
+  box.hidden = false;
+}
+function hideSugExcept(k){ Object.keys(SUG).forEach(function(j){ var b=$("#"+j+"-sug"); if (b && j!==k) b.hidden = true; }); }
+function val(id){ var el=$("#"+id); return el ? el.value.trim() : ""; }
+function radio(n){ var el=document.querySelector('input[name="'+n+'"]:checked'); return el ? el.value : null; }
+function submitSetup(m, locked){
+  var meta = {
+    tournament: val("f-tour"), date: val("f-date"), time: val("f-time"), venue: val("f-venue"), round: val("f-round"), court: val("f-court"), category: val("f-cat"),
+    type: radio("type")||"S",
+    a:{names:[val("f-a1"),val("f-a2")],team:val("f-ateam")}, b:{names:[val("f-b1"),val("f-b2")],team:val("f-bteam")},
+    points: 15, deuce: radio("deuce") !== "0", cap: null, games: +(radio("games")||3),
+    recorder: val("f-rec"), note: $("#f-note") ? $("#f-note").value : ""
+  };
+  if (radio("pmode") === "free"){ var p = parseInt(val("f-pfree"),10); meta.points = p > 0 && p < 100 ? p : 21; }
+  if (meta.deuce){ var c = parseInt(val("f-cap"),10); meta.cap = c > meta.points && c < 100 ? c : null; }
+  if (meta.type === "S"){ meta.a.names[1] = ""; meta.b.names[1] = ""; }
+  Object.keys(POOL).forEach(function(pk){ /* また使ったら候補に戻す */
+    var P = POOL[pk], used = P.vals(meta).map(function(v){ return (v || "").trim(); });
+    db[P.hidden] = db[P.hidden].filter(function(v){ return used.indexOf(v) === -1; });
+  });
+  if (m){
+    m.meta = meta; m.games[0].first = radio("first")||"A"; m.sample = false; save();
+    curId = m.id; editingId = null; toast("保存しました"); show(openView(m));
+  } else {
+    var mode = radio("mode") === "result" ? "result" : "rally";
+    var nm = { id: uid(), created: Date.now(), status:"playing", startedAt:null, endedAt:null, swapped:false, meta: meta, mode: mode,
+      games:[{ rallies:[], first: radio("first")||"A", start:null, end:null }] };
+    if (mode === "result"){ /* 勝敗が決まるのに必要なゲーム数だけ、入力欄を先に用意 */
+      nm.games = [];
+      for (var gi=0; gi<Math.ceil(meta.games/2); gi++) nm.games.push({ rallies:[], first:"A", start:null, end:null });
+    }
+    presetMode = null; db.matches.push(nm); save(); curId = nm.id; show(mode === "result" ? "edit" : "score");
+  }
+}
+
+/* ---------- score mode ---------- */
+function renderScore(){
+  var m = cur(); if (!m) return show("home");
+  var g = lastGame(m), gi = m.games.length-1, t = tally(g), w = wins(m), sv = server(g);
+  var over = gameOver(m,g), mw = matchWinner(m);
+  function panel(s){
+    var k = s.toLowerCase(), p = m.meta[k];
+    return '<button class="side '+k+'" data-act="pt" data-side="'+s+'" aria-label="'+esc(sideName(m,s))+'に1点追加">'+
+      '<span class="who"><span class="nm">'+esc(sideName(m,s))+'</span>'+(p.team?'<span class="tm">'+esc(p.team)+'</span>':"")+'</span>'+
+      '<span class="pts" aria-live="polite">'+(s==="A"?t.a:t.b)+'</span>'+
+      '<span class="ft">'+'<span class="srv'+(sv===s&&!over?" on":"")+'">'+SHUTTLE+'サービス</span><span class="tap-hint">タップで＋1</span></span></button>';
+  }
+  var prev = m.games.slice(0,-1).map(function(x,i){ var s=tally(x); return "<span>G"+(i+1)+" "+s.a+"-"+s.b+"</span>"; }).join("");
+  var gate = "";
+  if (endAsk){
+    gate = '<div class="gate"><div class="gate-card"><p class="eyebrow">End match</p><p style="font-size:20px;font-weight:900">ここで試合を終了しますか？</p>'+
+      '<p class="fine">リタイアなどでゲームの途中でも終了できます。点数は今の状態で記録されます。</p><div class="end-list">'+
+      '<button class="btn" data-act="end" data-win="A">'+esc(sideName(m,"A"))+' の勝ち<br><small style="font-weight:500">（相手がリタイア）</small></button>'+
+      '<button class="btn" data-act="end" data-win="B">'+esc(sideName(m,"B"))+' の勝ち<br><small style="font-weight:500">（相手がリタイア）</small></button>'+
+      '<button class="btn" data-act="end" data-win="">勝敗をつけずに終了</button>'+
+      '<button class="cta" data-act="end-no">試合を続ける</button></div></div></div>';
+  } else if (over){
+    var gw = gameWinner(m,g);
+    if (mw){
+      gate = '<div class="gate"><div class="gate-card"><p class="eyebrow">Match finished</p><p style="font-size:20px;font-weight:900">試合終了</p>'+
+        (m.meta.games>1?'<p class="big">'+w.A+' – '+w.B+'</p>':'<p class="big">'+t.a+' – '+t.b+'</p>')+
+        '<p class="who-won">勝者：'+esc(sideName(m,mw))+'</p>'+
+        '<button class="cta" data-act="finish">スコアシートを見る</button><button class="btn" data-act="undo">↶ 1点戻す</button></div></div>';
+    } else {
+      gate = '<div class="gate"><div class="gate-card"><p class="eyebrow">Game '+(gi+1)+'</p><p style="font-size:20px;font-weight:900">第'+(gi+1)+'ゲーム終了</p>'+
+        '<p class="big">'+t.a+' – '+t.b+'</p><p class="who-won">'+esc(sideName(m,gw))+' がこのゲームを取りました</p>'+
+        '<p class="fine">次のゲームは '+esc(sideName(m,gw))+' のサービスから。チェンジエンズです（画面の左右は ⇄ で入れ替え）。</p>'+
+        '<button class="cta" data-act="next">第'+(gi+2)+'ゲームへ</button><button class="btn" data-act="undo">↶ 1点戻す</button></div></div>';
+    }
+  }
+  $("#v-score").innerHTML =
+    '<div class="sbar"><button class="ibtn" data-act="home" aria-label="一覧にもどる">←</button>'+
+    '<div class="stitle"><strong>'+(m.meta.games>1?"GAME "+(gi+1):"GAME")+'</strong><span>'+m.meta.points+'点 · '+esc(titleOf(m.meta,"大会名なし"))+(m.meta.round?" · "+esc(m.meta.round):"")+'</span></div>'+
+    '<button class="ibtn" data-act="swap" aria-label="画面の左右を入れ替え">⇄</button><button class="ibtn" data-act="sheet">シート</button><button class="ibtn" data-act="end-ask">終了</button></div>'+
+    (m.meta.games>1?'<div class="gbar'+(m.swapped?" swapped":"")+'" aria-label="取ったゲーム数"><span class="a">GAMES '+w.A+'</span><span class="b">GAMES '+w.B+'</span></div>':"")+'<div class="court'+(m.swapped?" swapped":"")+'">'+panel("A")+panel("B")+'</div>'+
+    '<div class="sfoot"><div class="hist">'+prev+'</div><button class="undo" data-act="undo">↶ 1点戻す</button></div>'+gate;
+}
+function point(s){
+  var m = cur(), g = lastGame(m); if (gameOver(m,g)) return;
+  var now = Date.now(); if (!g.start) g.start = now; if (!m.startedAt) m.startedAt = now;
+  g.rallies.push(s);
+  var t = tally(g), mine = s==="A" ? t.a : t.b, other = s==="A" ? t.b : t.a;
+  if (gameOver(m,g)){ g.end = now; if (matchWinner(m)) m.endedAt = now; }
+  else if (ivPoint(m) && mine===ivPoint(m) && other<ivPoint(m)){ /* インターバル：21点制は11点、15点制は8点 */
+    toast(ivPoint(m)+"点：インターバル"+(m.meta.games===3 && m.games.length===3 ? "・チェンジエンズ" : ""));
+  } else if (m.meta.deuce && t.a===t.b && t.a===m.meta.points-1){
+    toast((m.meta.points-1)+"オール：延長（2点差まで"+(m.meta.cap?"・上限"+m.meta.cap+"点":"")+"）");
+  }
+  try { if (navigator.vibrate) navigator.vibrate(12); } catch(e){}
+  save(); renderScore();
+  var el = document.querySelector('.side[data-side="'+s+'"]'); if (el){ el.classList.add("hit"); }
+}
+function undo(){
+  var m = cur(), g = lastGame(m);
+  if (m.status==="done") m.status = "playing";
+  if (!g.rallies.length && m.games.length>1){ m.games.pop(); g = lastGame(m); }
+  if (!g.rallies.length){ toast("戻せる点数がありません"); return; }
+  g.rallies.pop(); g.end = null; m.endedAt = null;
+  if (!g.rallies.length) g.start = null;
+  if (m.games.length===1 && !g.rallies.length) m.startedAt = null;
+  save(); renderScore();
+}
+function nextGame(){
+  var m = cur(), g = lastGame(m), w = gameWinner(m,g); if (!w) return;
+  m.games.push({ rallies:[], first:w, start:null, end:null }); save(); renderScore();
+}
+
+/* ---------- sheet ---------- */
+function fmtClock(ms){ return ms ? timeStr(new Date(ms)) : "—"; }
+function cellTd(x){ return '<td'+(x==="S"||x==="R" ? ' class="sr"' : (x!=="" ? ' class="on"' : ""))+'>'+x+'</td>'; }
+function strip(g){
+  /* 最初の2マス：サーバー側に S・レシーバー側に R、続けて両者 0（実際のスコアシートの書き方） */
+  var a=0,b=0,ra=[g.first==="A"?"S":"R","0"],rb=[g.first==="B"?"S":"R","0"];
+  g.rallies.forEach(function(r){ if(r==="A"){ a++; ra.push(a); rb.push(""); } else { b++; rb.push(b); ra.push(""); } });
+  var out="", per=30;
+  for (var i=0;i<Math.max(ra.length,1);i+=per){
+    var A=ra.slice(i,i+per), B=rb.slice(i,i+per);
+    while (A.length<per){ A.push(""); B.push(""); }
+    out += '<table class="strip"><tr class="ra"><td class="s">A</td>'+A.map(cellTd).join("")+'</tr>'+
+           '<tr class="rb"><td class="s">B</td>'+B.map(cellTd).join("")+'</tr></table>';
+  }
+  return out;
+}
+function sheetHTML(m){
+  var M = m.meta, w = wins(m), mw = matchWinner(m), multi = M.games>1;
+  function mc(l,v){ return '<td><span class="l">'+l+'</span><span class="v">'+(v?esc(v):"")+'</span></td>'; }
+  function pl(s){ var k=s.toLowerCase(), p=M[k];
+    return '<div class="pl '+k+'"><span class="tag">'+s+'</span><span class="n">'+esc(sideName(m,s)).replace("・","<br>")+'</span><span class="t">'+esc(p.team||"")+'</span>'+(mw===s?'<span class="won">WIN</span>':"")+'</div>'; }
+  var cols=[], i;
+  for (i=0;i<M.games;i++) cols.push(i);
+  var res = '<table class="res"><tr><th></th>'+cols.map(function(i){ return '<th>'+(multi?"第"+(i+1)+"ゲーム":"スコア")+'</th>'; }).join("")+(multi?'<th>ゲーム数</th>':"")+'</tr>'+
+    ["A","B"].map(function(s){ return '<tr><td class="nm">'+s+'　'+esc(sideName(m,s))+'</td>'+cols.map(function(i){ var g=m.games[i]; if(!g||!g.rallies.length) return '<td data-act="cell" data-g="'+i+'" data-side="'+s+'">—</td>'; var t=tally(g); var gw=gameWinner(m,g); return '<td data-act="cell" data-g="'+i+'" data-side="'+s+'"'+(gw===s?' class="w"':"")+'>'+(s==="A"?t.a:t.b)+'</td>'; }).join("")+(multi?'<td class="w">'+w[s]+'</td>':"")+'</tr>'; }).join("")+'</table>';
+  var gms = m.games.filter(function(g){ return g.rallies.length; }).map(function(g,i){
+    var t=tally(g), dur = g.start && g.end ? Math.max(1,Math.round((g.end-g.start)/60000))+"分" : "";
+    return '<div class="gm"><div class="gt"><b>'+(multi?"第"+(i+1)+"ゲーム":"ゲーム")+'　'+t.a+' – '+t.b+(gameOver(m,g)?"":"（途中）")+'</b>'+(g.edited?'<span>※点数を手修正（経過の順番は実際と異なる場合あり）</span>':"")+'</div>'+strip(g)+'</div>';
+  }).join("");
+  var now = new Date(), rt = m.result && m.result.type;
+  var stamp = rt==="retired" ? "リタイア" : rt==="stopped" ? "途中終了" : (m.status!=="done"||!mw ? "記録途中" : "");
+  var winTxt = mw ? sideName(m,mw) + (rt==="retired" ? "（相手リタイア）" : "") : (rt==="stopped" ? "なし（途中終了）" : "");
+  return '<div class="sheet">'+
+    '<div class="hd"><div><div class="k">BADMINTON SCORE SHEET</div><h1>'+esc(titleOf(M,"（大会名なし）"))+'</h1></div><div style="display:flex;gap:12px;align-items:center">'+(stamp?'<span class="stamp">'+stamp+'</span>':"")+'<span class="mark">RALLY NOTE</span></div></div>'+
+    '<table class="meta"><tr>'+mc("日付",fmtDateJP(M.date))+mc("開始時刻",M.time)+mc("場所",M.venue)+mc("種目",(M.type==="D"?"ダブルス":"シングルス"))+'</tr>'+
+      '<tr>'+mc("区分",M.category)+mc("回戦",M.round)+mc("ルール",ruleLabel(M)).replace("<td>",'<td colspan="2">')+'</tr></table>'+
+    '<div class="vs">'+pl("A")+'<div class="mid">'+(multi?w.A+"-"+w.B:"VS")+'</div>'+pl("B")+'</div>'+
+    res+
+    (isResult(m) ? '<div class="legend">得点経過の記録なし（結果のみ入力）</div>' :
+      (gms ? '<div style="display:flex;flex-direction:column;gap:12px">'+gms+'</div>' : ""))+
+    '<div class="note"><span class="l">メモ</span>'+esc(M.note||"")+'</div>'+
+  '</div>';
+}
+function renderSheet(){
+  var m = cur(); if (!m) return show("home");
+  $("#v-sheet").innerHTML =
+    '<button class="back" data-act="home">← 一覧</button>'+
+    '<div><p class="eyebrow">Score sheet</p><h2 style="margin:2px 0 0;font-size:26px;font-weight:900;text-wrap:balance"><span style="display:inline-block">'+esc(sideName(m,"A"))+'</span> vs <span style="display:inline-block">'+esc(sideName(m,"B"))+'</span></h2></div>'+
+    '<p class="fine" style="font-size:14px">表の点数（各ゲームの数字）をタップすると、その場で直せます。</p>'+
+    '<div class="frame" id="frame"><div class="scaler" id="scaler">'+sheetHTML(m)+'</div></div>'+
+    '<button class="cta" data-act="pdf">PDFで保存・共有</button>'+
+    '<button class="btn" data-act="png">画像（PNG）で保存　<span style="font-weight:500;color:var(--muted);font-size:14px">LINE向き</span></button>'+
+    '<div class="row2"><button class="btn" data-act="edit">試合情報を編集</button><button class="btn" data-act="edit-pts">点数を編集</button></div>'+    (m.status!=="done" ? (isResult(m) ? '<button class="btn" data-act="edit-pts">結果の入力にもどる</button>' : '<button class="btn" data-act="resume">スコア入力にもどる</button>') : "")+
+    (confirmDel ? '<div class="confirm"><b>この試合の記録を削除しますか？</b><span class="fine" style="text-align:center">削除すると元に戻せません。</span><div class="row2"><button class="btn" data-act="del-no">やめる</button><button class="btn" style="color:var(--danger);border-color:var(--danger)" data-act="del-yes">削除する</button></div></div>'
+                : '<button class="link-danger" data-act="del">この試合を削除</button>');
+  fitSheet();
+  if (sheetRO){ sheetRO.disconnect(); sheetRO.observe($("#frame")); }
+}
+function renderEdit(){
+  var m = cur(); if (!m) return show("home");
+  var rt = (m.result && m.result.type) || "normal", rw = m.result && m.result.winner;
+  var resVal = rt==="retired" ? "ret-"+rw : (rt==="stopped" ? "stop" : "normal");
+  var multi = m.meta.games > 1, isR = isResult(m);
+  var cards = m.games.map(function(g,i){
+    var t = tally(g), done = gameOver(m,g);
+    function row(s){ var k=s.toLowerCase(), v=s==="A"?t.a:t.b;
+      return '<div class="erow"><span class="badge '+k+'">'+s+'</span><span class="who">'+esc(sideName(m,s))+'</span>'+
+        '<span class="step"><button type="button" data-act="ep" data-g="'+i+'" data-side="'+s+'" data-d="-1" aria-label="'+s+'を1点減らす">−</button>'+
+        '<input id="ep-'+i+'-'+s+'" class="ep" type="number" inputmode="numeric" min="0" max="99" value="'+v+'" data-g="'+i+'" data-side="'+s+'" aria-label="'+s+'の点数">'+
+        '<button type="button" data-act="ep" data-g="'+i+'" data-side="'+s+'" data-d="1" aria-label="'+s+'を1点増やす">＋</button></span></div>'; }
+    return '<div class="ecard"><h3><span>'+(multi?"第"+(i+1)+"ゲーム":"ゲーム")+'　<span class="chip'+(done?" done":"")+'">'+(done?"終了":"途中")+'</span></span>'+
+      (m.games.length>1 ? '<button class="mini" data-act="eg-del" data-g="'+i+'">このゲームを削除</button>' : "")+'</h3>'+row("A")+row("B")+'</div>';
+  }).join("");
+  $("#v-edit").innerHTML =
+    (isR ? '<div class="topnav">'+(m.status!=="done" ? '<button class="back" data-act="home">← 一覧</button>' : '<button class="back" data-act="sheet">← シートにもどる</button>')+
+             '<button class="back info" data-act="edit">試合の情報を編集 →</button></div>'
+         : '<button class="back" data-act="sheet">← シートにもどる</button>')+
+    '<div><p class="eyebrow">'+(isR?"Result":"Edit points")+'</p><h2 style="margin:2px 0 0;font-size:26px;font-weight:900">'+(isR?"結果を入力":"点数を編集")+'</h2>'+
+      (isR?'<p class="fine" style="font-size:15px;margin-top:4px;font-weight:700;color:var(--ink)">'+esc(sideName(m,"A"))+' vs '+esc(sideName(m,"B"))+'</p>':"")+'</div>'+
+    '<p class="fine" style="font-size:14px">'+(isR?"各ゲームの最終スコアを入力してください。数字の欄をタップすると直接入力できます。":"＋/−を押すか、数字を直接入力してください。")+'変更はすぐ保存されます。ルール（'+esc(ruleLabel(m.meta))+'）は'+(isR?"右上の「試合の情報を編集」":"「試合情報を編集」")+'で変えられます。</p>'+
+    cards+
+    (m.games.length < m.meta.games ? '<button class="btn" data-act="eg-add">＋ 第'+(m.games.length+1)+'ゲームを追加</button>' : "")+
+    '<fieldset><legend><span class="en">Result</span>試合の結果</legend>'+seg("res",[["normal","点数どおり"],["ret-A",esc(sideName(m,"A"))+" の勝ち（相手リタイア）"],["ret-B",esc(sideName(m,"B"))+" の勝ち（相手リタイア）"],["stop","勝敗なし（途中終了）"]],resVal,false,true)+'</fieldset>'+
+    (isR ? "" : '<p class="fine">※点数を手で直したゲームは、シートの得点経過の順番が実際と異なる場合があります（シートにも注記が入ります）。</p>')+
+    '<button class="cta" data-act="sheet">完了してシートを見る</button>';
+}
+function setPts(i,s,v,quiet){
+  var m = cur(), g = m.games[i]; if (!g) return;
+  v = Math.max(0, Math.min(99, parseInt(v,10) || 0));
+  var t = tally(g), c = s==="A" ? t.a : t.b; if (v === c){ if (!quiet) render(); return; }
+  while (c < v){ g.rallies.push(s); c++; }
+  while (c > v){ g.rallies.splice(g.rallies.lastIndexOf(s), 1); c--; }
+  g.edited = true; afterEdit(m, quiet);
+}
+/* 数字を入力して次の欄をタップしたとき、描き直してもカーソルが次の欄に残るようにする */
+function renderKeepFocus(){
+  var a = document.activeElement, id = a && a.id && a.classList && a.classList.contains("ep") ? a.id : null;
+  render();
+  if (id){ var n = document.getElementById(id); if (n){ n.focus(); try { n.select(); } catch(e){} } }
+}
+function afterEdit(m, quiet){
+  var special = m.result && m.result.type !== "normal";
+  if (special || matchWinner(m)){ m.status = "done"; if (!m.endedAt) m.endedAt = Date.now(); }
+  else { m.status = "playing"; m.endedAt = null; }
+  m.sample = false; save(); if (!quiet) render();
+}
+function openCell(i,s){
+  var m = cur(), g = m.games[i], v = g ? (s==="A" ? tally(g).a : tally(g).b) : 0;
+  if (!g && i > m.games.length){ toast("前のゲームから入力してください"); return; }
+  var md = $("#modal");
+  md.innerHTML = '<div class="box" style="max-width:420px"><p class="eyebrow">Edit score</p>'+
+    '<div class="cell-head"><span class="badge '+s.toLowerCase()+'">'+s+'</span>'+(m.meta.games>1?"第"+(i+1)+"ゲーム　":"")+esc(sideName(m,s))+'</div>'+
+    '<div class="step lg"><button type="button" data-act="cell-step" data-d="-1" aria-label="1点減らす">−</button>'+
+    '<input id="cell-v" type="number" inputmode="numeric" min="0" max="99" value="'+v+'" aria-label="点数"><button type="button" data-act="cell-step" data-d="1" aria-label="1点増やす">＋</button></div>'+
+    '<button class="cta" data-act="cell-save" data-g="'+i+'" data-side="'+s+'">この点数にする</button><button class="btn" data-act="close-modal">やめる</button></div>';
+  md.hidden = false; lockScroll();
+}
+function saveCell(i,s){
+  var m = cur(), v = $("#cell-v").value;
+  while (m.games.length <= i){ var pg = lastGame(m); m.games.push({ rallies:[], first: gameWinner(m,pg) || pg.first || "A", start:null, end:null, edited:true }); }
+  $("#modal").hidden = true; $("#modal").innerHTML = ""; lockScroll();
+  setPts(i, s, v); toast("点数を直しました");
+}
+function fitSheet(){
+  var f = $("#frame"), s = $("#scaler"); if (!f || !s) return;
+  var k = f.clientWidth / 794; s.style.transform = "scale("+k+")"; f.style.height = (s.firstElementChild.offsetHeight * k) + "px";
+}
+window.addEventListener("resize", function(){ if (view==="sheet") fitSheet(); });
+window.addEventListener("orientationchange", function(){ setTimeout(function(){ if (view==="sheet") fitSheet(); }, 300); });
+var sheetRO = window.ResizeObserver ? new ResizeObserver(function(){ if (view==="sheet") fitSheet(); }) : null;
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(function(){ if (view==="sheet") fitSheet(); });
+
+/* ---------- export ---------- */
+var dlPromise = null;
+function getDownloads(){
+  if (!dlPromise) dlPromise = (window.claude && window.claude.use) ? window.claude.use("downloads").catch(function(){ return null; }) : Promise.resolve(null);
+  return dlPromise;
+}
+getDownloads();
+function fileBase(m){
+  var M=m.meta, s=(M.date||todayStr())+"_"+(M.tournament ? M.tournament+"_" : "")+sideName(m,"A")+"-vs-"+sideName(m,"B");
+  return s.replace(/[\\\/:*?"<>|]/g,"").replace(/\s+/g,"_").slice(0,90);
+}
+async function capture(m){
+  var host = $("#capture"); host.innerHTML = sheetHTML(m);
+  try { await document.fonts.ready; } catch(e){}
+  var c = await window.html2canvas(host.firstElementChild, { scale:2, backgroundColor:"#ffffff", logging:false });
+  host.innerHTML = ""; return c;
+}
+async function exportFile(kind){
+  var m = cur(); if (!m) return;
+  if (!window.html2canvas || (kind==="pdf" && !(window.jspdf && window.jspdf.jsPDF))){ toast("保存の準備ができていません。通信環境を確認して開き直してください"); return; }
+  busy(true);
+  var canvas;
+  try {
+    canvas = await capture(m);
+    var blob, name = fileBase(m) + (kind==="pdf" ? ".pdf" : ".png");
+    if (kind==="pdf"){
+      var pdf = new window.jspdf.jsPDF({ orientation:"p", unit:"mm", format:"a4" });
+      var pw=210, ph=297, w=pw, h=canvas.height*pw/canvas.width;
+      if (h>ph){ h=ph; w=canvas.width*ph/canvas.height; }
+      pdf.addImage(canvas.toDataURL("image/jpeg",0.95), "JPEG", (pw-w)/2, 0, w, h);
+      blob = pdf.output("blob");
+    } else {
+      blob = await new Promise(function(r){ canvas.toBlob(r, "image/png"); });
+    }
+    var dl = await getDownloads();
+    if (!dl){ await deviceSave(blob, name, kind, canvas); return; }
+    try { await dl.save({ filename:name, data:blob }); toast("保存しました"); }
+    catch(e){
+      var c = e && e.code;
+      if (c==="declined") toast("保存をキャンセルしました");
+      else if (c==="rate_limited") toast("少し待ってから、もう一度押してください");
+      else fallback(canvas);
+    }
+  } catch(e){ console.error(e); toast("ファイルを作れませんでした。もう一度お試しください"); }
+  finally { busy(false); }
+}
+/* Claudeの外（普通のWebページ）で開いたとき：スマホは共有メニュー（LINE・ファイルに保存など）、パソコンは通常のダウンロード */
+var pendingShare = null;
+function canShareFile(f){ try { return !!(navigator.share && navigator.canShare && navigator.canShare({ files:[f] })); } catch(e){ return false; } }
+async function shareFile(f){
+  try { await navigator.share({ files:[f], title:f.name }); return "ok"; }
+  catch(e){ if (e && e.name === "AbortError") return "cancel"; if (e && e.name === "NotAllowedError") return "again"; throw e; }
+}
+function downloadBlob(blob, name){
+  try {
+    var u = URL.createObjectURL(blob), a = document.createElement("a");
+    a.href = u; a.download = name; a.rel = "noopener"; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function(){ URL.revokeObjectURL(u); }, 60000); return true;
+  } catch(e){ return false; }
+}
+async function deviceSave(blob, name, kind, canvas){
+  var file = null;
+  try { file = new File([blob], name, { type: kind==="pdf" ? "application/pdf" : "image/png" }); } catch(e){}
+  var touch = window.matchMedia && window.matchMedia("(pointer:coarse)").matches;
+  if (file && touch && canShareFile(file)){
+    var r = "again";
+    try { r = await shareFile(file); } catch(e){ console.error(e); r = "again"; }
+    if (r === "ok"){ toast("共有・保存しました"); return; }
+    if (r === "cancel"){ toast("キャンセルしました"); return; }
+    readyModal(file, blob, name, canvas); return; /* シート作成に時間がかかると、もう一度タップが必要な端末がある */
+  }
+  if (downloadBlob(blob, name)){ toast("保存しました"); return; }
+  fallback(canvas);
+}
+function readyModal(file, blob, name, canvas){
+  pendingShare = { file:file, blob:blob, name:name, canvas:canvas };
+  var md = $("#modal");
+  md.innerHTML = '<div class="box" style="max-width:420px"><p class="eyebrow">Ready</p><b style="font-size:18px">スコアシートができました</b>'+
+    '<p class="fine">下のボタンから、LINEで送る・ファイルに保存するなどを選べます。</p>'+
+    '<button class="cta" data-act="share-now">共有・保存する</button>'+
+    '<button class="btn" data-act="dl-now">ダウンロードする</button>'+
+    '<button class="btn" data-act="img-now">画像を長押しで保存する</button>'+
+    '<button class="btn" data-act="close-modal">閉じる</button></div>';
+  md.hidden = false; lockScroll();
+}
+function fallback(canvas){
+  var md = $("#modal");
+  md.innerHTML = '<div class="box"><b style="font-size:18px">この画面ではファイル保存ができません</b>'+
+    '<p class="fine">下の画像を長押し（パソコンは右クリック）して保存してください。</p>'+
+    '<img alt="スコアシート" src="'+canvas.toDataURL("image/png")+'"><button class="cta" data-act="close-modal">閉じる</button></div>';
+  md.hidden = false; lockScroll();
+}
+function busy(on){
+  document.querySelectorAll('[data-act="pdf"],[data-act="png"]').forEach(function(b){ b.disabled = on; });
+  if (on) toast("シートを作成しています…", 6000);
+}
+
+/* ---------- misc ---------- */
+var tt=null;
+function toast(msg, ms, actLabel, actFn){
+  var t=$("#toast"); t.textContent=msg; t.classList.toggle("has-act", !!actLabel);
+  if (actLabel){ var b=document.createElement("button"); b.type="button"; b.className="t-act"; b.textContent=actLabel;
+    b.addEventListener("click", function(){ clearTimeout(tt); t.classList.remove("show"); actFn(); }); t.appendChild(b); }
+  t.classList.add("show"); clearTimeout(tt); tt=setTimeout(function(){ t.classList.remove("show"); }, ms||2200);
+}
+
+/* ---------- swipe to delete (home list) ---------- */
+var SW = 96, swOpen = null, sw = null, swSuppress = 0;
+function swSet(li, x){ li.querySelector(".item").style.transform = x ? "translateX("+x+"px)" : ""; li.classList.toggle("off", x !== 0); }
+function swClose(li){ if (!li) return; swSet(li, 0); if (swOpen === li) swOpen = null; }
+document.addEventListener("pointerdown", function(e){
+  if (view !== "home") return;
+  if (swOpen && !e.target.closest(".swipe-del")){ /* 開いている行は、ほかの場所に触れたら閉じる */
+    var wasOpen = e.target.closest("li.swipe") === swOpen; swClose(swOpen); if (wasOpen){ swSuppress = Date.now(); return; }
+  }
+  var it = e.target.closest("li.swipe .item"); if (!it || e.button > 0) return;
+  var li = it.parentNode;
+  sw = { li:li, id:e.pointerId, x0:e.clientX, y0:e.clientY, base: swOpen === li ? -SW : 0, drag:false };
+});
+document.addEventListener("pointermove", function(e){
+  if (!sw || e.pointerId !== sw.id) return;
+  var dx = e.clientX - sw.x0, dy = e.clientY - sw.y0;
+  if (!sw.drag){
+    if (Math.abs(dy) > 10 && Math.abs(dy) > Math.abs(dx)){ sw = null; return; } /* 縦スクロール */
+    if (Math.abs(dx) < 10) return;
+    sw.drag = true; sw.li.classList.add("drag");
+    try { sw.li.querySelector(".item").setPointerCapture(e.pointerId); } catch(_){}
+  }
+  var x = sw.base + dx; if (x > 0) x = 0; if (x < -SW) x = -SW + (x + SW) * 0.35; /* 引っぱりすぎは重く */
+  swSet(sw.li, x);
+});
+function swEnd(e){
+  if (!sw || e.pointerId !== sw.id) return;
+  var s = sw; sw = null; if (!s.drag) return;
+  s.li.classList.remove("drag"); swSuppress = Date.now();
+  var m = s.li.querySelector(".item").style.transform.match(/-?[\d.]+/), x = m ? +m[0] : 0;
+  if (x < -SW/2){ if (swOpen && swOpen !== s.li) swClose(swOpen); swSet(s.li, -SW); swOpen = s.li; } else swClose(s.li);
+}
+document.addEventListener("pointerup", swEnd);
+document.addEventListener("pointercancel", swEnd);
+document.addEventListener("click", function(e){ /* スワイプ直後のタップで試合が開かないように */
+  if (Date.now() - swSuppress < 350 && e.target.closest("li.swipe .item")){ e.stopImmediatePropagation(); e.preventDefault(); }
+}, true);
+function swipeDelete(id){
+  var idx = -1; db.matches.forEach(function(x,i){ if (x.id === id) idx = i; }); if (idx < 0) return;
+  var removed = db.matches[idx], li = document.querySelector('li.swipe[data-id="'+id+'"]');
+  db.matches.splice(idx, 1); save(); swOpen = null;
+  function done(){ renderHome(); toast("削除しました", 5000, "元に戻す", function(){ db.matches.splice(Math.min(idx, db.matches.length), 0, removed); save(); if (view==="home") renderHome(); toast("元に戻しました"); }); }
+  if (li && !window.matchMedia("(prefers-reduced-motion: reduce)").matches){
+    li.style.height = li.offsetHeight + "px"; li.offsetHeight; li.classList.add("gone"); li.style.height = "0px"; setTimeout(done, 230);
+  } else done();
+}
+async function keepAwake(){ try { if (navigator.wakeLock && !wake) { wake = await navigator.wakeLock.request("screen"); wake.addEventListener("release", function(){ wake=null; }); } } catch(e){ wake=null; } }
+function releaseWake(){ try { if (wake) wake.release(); } catch(e){} wake=null; }
+document.addEventListener("visibilitychange", function(){ if (document.visibilityState==="visible" && view==="score") keepAwake(); });
+/* 試合中の画面：指が少しずれても画面がスクロール・バウンド・拡大しないようにする（結果の小窓だけは例外） */
+document.addEventListener("touchmove", function(e){
+  if (view === "score" && !(e.target.closest && e.target.closest(".gate"))) { if (e.cancelable) e.preventDefault(); }
+  else if (e.touches && e.touches.length > 1 && view === "score") { if (e.cancelable) e.preventDefault(); }
+}, { passive:false });
+["gesturestart","gesturechange"].forEach(function(t){ document.addEventListener(t, function(e){ if (view === "score") e.preventDefault(); }, { passive:false }); });
+document.addEventListener("touchstart", function(){}, { passive:true }); /* iPhoneでボタンを押した感触（:active）を出す */
+try { if ("scrollRestoration" in history) history.scrollRestoration = "manual"; } catch(e){}
+
+document.addEventListener("click", function(e){ /* 候補リストの外をタップしたら閉じる */
+  Object.keys(SUG).forEach(function(k){ var s = $("#"+k+"-sug"); if (s && !s.hidden && !e.target.closest("#"+k+"-sug") && e.target.id !== SUG[k].input) s.hidden = true; });
+});
+document.addEventListener("click", function(e){
+  var el = e.target.closest("[data-act]"); if (!el) return;
+  var a = el.dataset.act, m = cur();
+  switch(a){
+    case "swipe-del": swipeDelete(el.dataset.id); break;
+    case "new": editingId=null; presetMode=null; show("setup"); break;
+    case "sug-pick": var sk=el.dataset.k, sin=$("#"+SUG[sk].input); sin.value = el.dataset.v; $("#"+sk+"-sug").hidden = true; break;
+    case "sug-del": var dk=el.dataset.k, dh=POOL[SUG[dk].pool].hidden; if (db[dh].indexOf(el.dataset.v) === -1) db[dh].push(el.dataset.v); save(); showSug(dk, $("#"+SUG[dk].input).value.trim()); toast("候補から削除しました"); break;
+    case "new-result": editingId=null; presetMode="result"; show("setup"); break;
+    case "home": confirmDel=false; show("home"); break;
+    case "open": curId = el.dataset.id; confirmDel=false; var mm=cur(); show(openView(mm)); break;
+    case "pt": point(el.dataset.side); break;
+    case "undo": undo(); break;
+    case "next": nextGame(); break;
+    case "swap": m.swapped = !m.swapped; save(); renderScore(); break;
+    case "sheet": show("sheet"); break;
+    case "finish": m.status="done"; m.result={type:"normal"}; save(); show("sheet"); break;
+    case "resume": m.status="playing"; m.result={type:"normal"}; m.endedAt=null; save(); show("score"); break;
+    case "end-ask": endAsk=true; renderScore(); break;
+    case "end-no": endAsk=false; renderScore(); break;
+    case "end": endMatch(el.dataset.win || null); break;
+    case "edit-pts": show("edit"); break;
+    case "cell": if (view==="sheet" && el.closest("#frame")) openCell(+el.dataset.g, el.dataset.side); break;
+    case "cell-step": var cv=$("#cell-v"); cv.value = Math.max(0, Math.min(99, (parseInt(cv.value,10)||0) + (+el.dataset.d))); break;
+    case "cell-save": saveCell(+el.dataset.g, el.dataset.side); break;
+    case "ep": var gi=+el.dataset.g, s=el.dataset.side, t=tally(m.games[gi]); setPts(gi, s, (s==="A"?t.a:t.b) + (+el.dataset.d)); break;
+    case "eg-add": var pg=lastGame(m); m.games.push({ rallies:[], first: gameWinner(m,pg) || pg.first || "A", start:null, end:null, edited:true }); afterEdit(m); break;
+    case "eg-del": m.games.splice(+el.dataset.g,1); if (!m.games.length) m.games.push({rallies:[],first:"A",start:null,end:null}); afterEdit(m); break;
+    case "edit": editingId = m.id; show("setup"); break;
+    case "cancel-edit": editingId=null; show(m ? openView(m) : "home"); break;
+    case "pdf": exportFile("pdf"); break;
+    case "png": exportFile("png"); break;
+    case "del": confirmDel=true; renderSheet(); break;
+    case "del-no": confirmDel=false; renderSheet(); break;
+    case "del-yes": db.matches = db.matches.filter(function(x){ return x.id!==curId; }); curId=null; confirmDel=false; save(); toast("削除しました"); show("home"); break;
+    case "close-modal": $("#modal").hidden = true; $("#modal").innerHTML=""; pendingShare = null; lockScroll(); break;
+    case "share-now": if (pendingShare){ var ps = pendingShare; shareFile(ps.file).then(function(r){
+        if (r === "ok"){ $("#modal").hidden = true; $("#modal").innerHTML = ""; pendingShare = null; lockScroll(); toast("共有・保存しました"); }
+        else if (r === "again") toast("この画面では共有できません。下のボタンをお試しください");
+      }).catch(function(){ toast("この画面では共有できません。下のボタンをお試しください"); }); } break;
+    case "dl-now": if (pendingShare){ if (downloadBlob(pendingShare.blob, pendingShare.name)) toast("保存しました"); } break;
+    case "img-now": if (pendingShare){ var pc = pendingShare.canvas; pendingShare = null; fallback(pc); } break;
+  }
+});
+
+document.addEventListener("change", function(e){
+  var el = e.target, m = cur(); if (!m || view !== "edit") return;
+  if (el.classList.contains("ep")){ setPts(+el.dataset.g, el.dataset.side, el.value, true); setTimeout(renderKeepFocus, 0); }
+  else if (el.name === "res"){
+    var v = el.value;
+    m.result = v==="normal" ? {type:"normal"} : v==="stop" ? {type:"stopped", winner:null} : {type:"retired", winner:v.slice(4)};
+    afterEdit(m);
+  }
+});
+document.addEventListener("focusin", function(e){ /* 数字欄をタップしたら中身を選択（0を消さずに上書きできる） */
+  var el = e.target; if (el && el.classList && (el.classList.contains("ep") || el.id === "cell-v")) setTimeout(function(){ try { el.select(); } catch(_){} }, 0);
+});
+function endMatch(win){
+  var m = cur(), now = Date.now(), g = lastGame(m);
+  if (g.rallies.length){ if (!g.end) g.end = now; } else if (m.games.length > 1) m.games.pop();
+  m.result = win ? {type:"retired", winner:win} : {type:"stopped", winner:null};
+  m.status = "done"; m.endedAt = now; if (!m.startedAt) m.startedAt = now;
+  endAsk = false; save(); toast("試合を終了しました"); show("sheet");
+}
+
+try { history.replaceState({ rn:"home" }, ""); } catch(e){}
+show("home", true);
+})();
+</script>
+
+</body></html>
