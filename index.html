@@ -4,7 +4,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@500;600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap">
 <style>
-/* Layout: "SCOREBOARD" white (案C白, V29; mobile hardening V33; standalone web V34; name/team suggestions V35; 21-point option V36) — white ground, flat light-grey cards, rounded-rect controls; bright teal (A / primary) and bright pink (B) from the club logo; score mode = two deep-tinted panels with numbers in logo teal / deep pink. The printed sheet stays white paper. */
+/* Layout: "SCOREBOARD" white (案C白, V29; mobile hardening V33; standalone web V34; name/team suggestions V35; 21-point option V36; 21pt cap 30 V37) — white ground, flat light-grey cards, rounded-rect controls; bright teal (A / primary) and bright pink (B) from the club logo; score mode = two deep-tinted panels with numbers in logo teal / deep pink. The printed sheet stays white paper. */
 :root{
   --bg:#FFFFFF; --surface:#F1F6F6; --field:#FFFFFF; --ink:#142625; --muted:#5E7372; --line:#DCE7E6;
   --teal:#058687; --on-teal:#FFFFFF; --teal-tint:#DCEEEE; --teal-ink:#046A6B;
@@ -501,7 +501,12 @@ function renderSetup(){
   var f = $("#f");
   f.addEventListener("change", function(e){
     if (e.target.name==="type") f.dataset.type = e.target.value;
-    if (e.target.name==="pmode") f.dataset.pmode = e.target.value;
+    if (e.target.name==="pmode"){ f.dataset.pmode = e.target.value;
+      var cap = $("#f-cap"); /* 21点：上限点が空欄なら公式ルールの30点を自動で入れる。ほかに切り替えたら、自動で入れた30は消す */
+      if (e.target.value === "21"){ if (!cap.value.trim()){ cap.value = "30"; cap.dataset.auto = "1"; } }
+      else if (cap.dataset.auto === "1" && cap.value.trim() === "30"){ cap.value = ""; delete cap.dataset.auto; }
+    }
+    if (e.target.id==="f-cap") delete e.target.dataset.auto;
     if (e.target.name==="deuce") f.dataset.deuce = e.target.value;
     if (e.target.name==="mode") f.dataset.mode = e.target.value;
   });
