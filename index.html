@@ -4,7 +4,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Rubik:wght@500;600;700;800;900&family=Zen+Maru+Gothic:wght@400;500;700;900&display=swap">
 <style>
-/* Layout: "SCOREBOARD" white (案C白, V29; mobile hardening V33; standalone web V34; name/team suggestions V35; 21-point option V36; 21pt cap 30 V37; wordmark fits CTA width V38; club byline V39; byline pink V40; 2-game format + rule order V41; prepare matches before play V42; POP poster redesign + bouncing title V43; rally line removed V44; byline team name in ink V45; sticker deeper pink + white text V46; title period in logo pink V47; centred plus icon V48; calmer MATCHES heading V49; shuttle O tried V52-53 then back to the two-tone dot V54; rougher hand-made dot V55; page labels match MATCHES V56; lighter page headings V57; card labels in the same face V57; one type system everywhere V58; pink prepare button with white text V61) — white ground, flat light-grey cards, rounded-rect controls; bright teal (A / primary) and bright pink (B) from the club logo; score mode = two deep-tinted panels with numbers in logo teal / deep pink. The printed sheet stays white paper. */
+/* Layout: "SCOREBOARD" white (案C白, V29; mobile hardening V33; standalone web V34; name/team suggestions V35; 21-point option V36; 21pt cap 30 V37; wordmark fits CTA width V38; club byline V39; byline pink V40; 2-game format + rule order V41; prepare matches before play V42; POP poster redesign + bouncing title V43; rally line removed V44; byline team name in ink V45; sticker deeper pink + white text V46; title period in logo pink V47; centred plus icon V48; calmer MATCHES heading V49; shuttle O tried V52-53 then back to the two-tone dot V54; rougher hand-made dot V55; page labels match MATCHES V56; lighter page headings V57; card labels in the same face V57; one type system everywhere V58; pink prepare button with white text V61; sticker tilts down to the right V62) — white ground, flat light-grey cards, rounded-rect controls; bright teal (A / primary) and bright pink (B) from the club logo; score mode = two deep-tinted panels with numbers in logo teal / deep pink. The printed sheet stays white paper. */
 :root{
   --bg:#FFFFFF; --surface:#F1F6F6; --field:#FFFFFF; --ink:#142625; --muted:#5E7372; --line:#DCE7E6;
   --teal:#058687; --on-teal:#FFFFFF; --teal-tint:#DCEEEE; --teal-ink:#046A6B;
@@ -43,7 +43,7 @@ h2.sec .en{font-family:var(--font-num);font-weight:800;font-size:15px;letter-spa
 .hero{display:flex;flex-direction:column;gap:8px;padding:4px 0 0;min-width:0}
 .poster{--stk:clamp(86px,26vw,132px);position:relative;background:var(--teal);color:#FFFFFF;border-radius:28px;padding:16px 18px 20px;overflow:hidden;min-width:0;isolation:isolate}
 .poster-top{position:relative;z-index:3;min-height:calc(var(--stk) - 18px);margin:0;padding-right:calc(var(--stk) + 4px);font-family:var(--font-num);font-weight:800;font-size:11px;line-height:1.35;letter-spacing:.14em;text-transform:uppercase;color:#FFFFFF}
-.sticker{position:absolute;z-index:4;top:10px;right:10px;width:var(--stk);height:var(--stk);transform:rotate(-12deg);color:#FFFFFF}
+.sticker{position:absolute;z-index:4;top:10px;right:10px;width:var(--stk);height:var(--stk);transform:rotate(12deg);color:#FFFFFF}
 .sticker svg{display:block;width:100%;height:100%;overflow:visible}
 .sticker .bg{fill:var(--pink-dot)}
 .sticker text{font-family:var(--font-num);font-weight:800;font-size:7.6px;letter-spacing:.08em;fill:#FFFFFF}
@@ -71,7 +71,7 @@ h2.sec .en{font-family:var(--font-num);font-weight:800;font-size:15px;letter-spa
   92%{transform:translateY(0) scale(1.02,.98)}
   100%{opacity:1;transform:none}
 }
-@keyframes rn-pop{0%{opacity:0;transform:rotate(-70deg) scale(0)}100%{opacity:1;transform:rotate(-12deg) scale(1)}}
+@keyframes rn-pop{0%{opacity:0;transform:rotate(-60deg) scale(0)}100%{opacity:1;transform:rotate(12deg) scale(1)}}
 
 /* buttons */
 .cta{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:64px;border:0;border-radius:var(--r);background:var(--teal);color:var(--on-teal);font-size:18px;font-weight:700;letter-spacing:.04em}
