@@ -4,7 +4,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Rubik:wght@500;600;700;800;900&family=Zen+Maru+Gothic:wght@400;500;700;900&display=swap">
 <style>
-/* Layout: "SCOREBOARD" white (案C白, V29; mobile hardening V33; standalone web V34; name/team suggestions V35; 21-point option V36; 21pt cap 30 V37; wordmark fits CTA width V38; club byline V39; byline pink V40; 2-game format + rule order V41; prepare matches before play V42; POP poster redesign + bouncing title V43; rally line removed V44; byline team name in ink V45; sticker deeper pink + white text V46) — white ground, flat light-grey cards, rounded-rect controls; bright teal (A / primary) and bright pink (B) from the club logo; score mode = two deep-tinted panels with numbers in logo teal / deep pink. The printed sheet stays white paper. */
+/* Layout: "SCOREBOARD" white (案C白, V29; mobile hardening V33; standalone web V34; name/team suggestions V35; 21-point option V36; 21pt cap 30 V37; wordmark fits CTA width V38; club byline V39; byline pink V40; 2-game format + rule order V41; prepare matches before play V42; POP poster redesign + bouncing title V43; rally line removed V44; byline team name in ink V45; sticker deeper pink + white text V46; title period in logo pink V47; centred plus icon V48) — white ground, flat light-grey cards, rounded-rect controls; bright teal (A / primary) and bright pink (B) from the club logo; score mode = two deep-tinted panels with numbers in logo teal / deep pink. The printed sheet stays white paper. */
 :root{
   --bg:#FFFFFF; --surface:#F1F6F6; --field:#FFFFFF; --ink:#142625; --muted:#5E7372; --line:#DCE7E6;
   --teal:#058687; --on-teal:#FFFFFF; --teal-tint:#DCEEEE; --teal-ink:#046A6B;
@@ -52,7 +52,7 @@ h2.sec .en{font-size:24px;letter-spacing:.02em;color:var(--ink)}
 .wordmark .ln{display:block;width:max-content;position:relative}
 .wordmark .ln:first-child{z-index:2}
 .wordmark .ch{display:inline-block;transform-origin:50% 100%}
-.wordmark .pd{color:var(--pink-soft)}
+.wordmark .pd{color:var(--pink-dot)}
 .wordmark .dot{display:inline-block;width:.7em;height:.7em;border-radius:50%;margin:0 .04em;background:linear-gradient(var(--pink-dot) 0 46%,transparent 46% 54%,#FFFFFF 54% 100%)}
 .byline{margin:0;align-self:flex-end;font-family:var(--font-num);font-weight:700;font-size:12px;letter-spacing:.12em;color:var(--muted);white-space:nowrap}
 .byline b{font-weight:800;color:var(--ink)}
@@ -76,7 +76,8 @@ h2.sec .en{font-size:24px;letter-spacing:.02em;color:var(--ink)}
 .cta{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:64px;border:0;border-radius:var(--r);background:var(--teal);color:var(--on-teal);font-size:18px;font-weight:900;letter-spacing:.04em}
 .cta:active,.btn:active{transform:translateY(2px)}
 .cta.ink{background:var(--ink);min-height:68px;font-size:19px}
-.cta .plus{flex:none;width:36px;height:36px;border-radius:50%;background:var(--pink-dot);color:#FFFFFF;display:grid;place-items:center;font-family:var(--font-disp);font-synthesis:none;font-size:24px;line-height:1}
+.cta .plus{flex:none;width:36px;height:36px;border-radius:50%;background:var(--pink-dot);color:#FFFFFF;display:grid;place-items:center}
+.cta .plus svg{display:block;width:16px;height:16px}
 .btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:56px;border:0;border-radius:var(--r-btn);background:var(--surface);font-size:16px;font-weight:700;color:var(--ink)}
 .row2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
 .link-danger{background:none;border:0;color:var(--danger);font-weight:700;font-size:15px;padding:12px;align-self:center}
@@ -503,7 +504,7 @@ function renderHome(){
   $("#v-home").innerHTML =
     '<header class="hero"><div class="poster"><p class="poster-top">Badminton<br>score sheet</p>'+STICKER+wordmarkHTML()+'</div><p class="byline">by <b>KINASHI BADMINTON Jr.</b></p></header>'+
     (inApp() ? '<div class="inapp"><b>LINEなどのアプリの中で開いています</b><span>記録が残らないことがあります。右上（または右下）のメニューから「ブラウザで開く」を選んで、Safari や Chrome で使ってください。</span></div>' : "")+
-    '<button class="cta ink" data-act="new"><span class="plus" aria-hidden="true">+</span>新しい試合をはじめる</button>'+
+    '<button class="cta ink" data-act="new"><span class="plus" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M8 2v12M2 8h12" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" fill="none"/></svg></span>新しい試合をはじめる</button>'+
     '<div class="sec-row"><h2 class="sec"><span class="en">Matches</span>記録した試合</h2>'+(items?'<span class="swipe-hint">← スワイプで削除</span>':"")+'</div>'+
     (items ? '<ul class="list">'+items+'</ul>' : '<div class="empty">まだ記録がありません。<br>「新しい試合をはじめる」から記録できます。</div>')+
     '<p class="fine" style="font-size:11px;line-height:1.6;padding:0 4px">記録はこの端末のこのブラウザの中だけに保存されます。別のスマホや家族とは自動では共有されないので、試合が終わったらスコアシートをPDFか画像で保存して送ってください。</p>';
