@@ -4,7 +4,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@500;600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap">
 <style>
-/* Layout: "SCOREBOARD" white (案C白, V29; mobile hardening V33; standalone web V34; name/team suggestions V35) — white ground, flat light-grey cards, rounded-rect controls; bright teal (A / primary) and bright pink (B) from the club logo; score mode = two deep-tinted panels with numbers in logo teal / deep pink. The printed sheet stays white paper. */
+/* Layout: "SCOREBOARD" white (案C白, V29; mobile hardening V33; standalone web V34; name/team suggestions V35; 21-point option V36) — white ground, flat light-grey cards, rounded-rect controls; bright teal (A / primary) and bright pink (B) from the club logo; score mode = two deep-tinted panels with numbers in logo teal / deep pink. The printed sheet stays white paper. */
 :root{
   --bg:#FFFFFF; --surface:#F1F6F6; --field:#FFFFFF; --ink:#142625; --muted:#5E7372; --line:#DCE7E6;
   --teal:#058687; --on-teal:#FFFFFF; --teal-tint:#DCEEEE; --teal-ink:#046A6B;
@@ -467,7 +467,7 @@ function renderSetup(){
     '<button class="back" data-act="'+(m?"cancel-edit":"home")+'">← '+(m?"もどる":"一覧")+'</button>'+
     '<div><p class="eyebrow">'+(m?"Edit match":"New match")+'</p><h2 style="margin:2px 0 0;font-size:26px;font-weight:900">'+(m?"試合情報を編集":"試合の情報")+'</h2></div>'+
     '<p class="fine" style="font-size:14px">すべて空欄のままでも先へ進めます。名前などはあとから編集できます。</p>'+
-    '<form id="f" data-type="'+M.type+'" data-pmode="'+(M.points===15?"15":"free")+'" data-deuce="'+(M.deuce?"1":"0")+'" data-mode="'+mode+'" novalidate>'+
+    '<form id="f" data-type="'+M.type+'" data-pmode="'+pmodeOf(M.points)+'" data-deuce="'+(M.deuce?"1":"0")+'" data-mode="'+mode+'" novalidate>'+
       (m ? "" : '<fieldset><legend><span class="en">Mode</span>記録のしかた</legend>'+seg("mode",[["rally","1点ずつ記録<br><small>試合中にタップ</small>"],["result","結果だけ入力<br><small>最終スコアのみ</small>"]],mode)+'</fieldset>')+
       '<fieldset>'+
         '<div class="field">'+inp("f-tour","大会名",M.tournament,"text","例：市民バドミントン大会")+
@@ -486,8 +486,8 @@ function renderSetup(){
           sugField(k+"team", inp("f-"+k+"team","チーム・学校名",p.team,"text","所属"))+'</fieldset>';
       }).join("")+
       '<fieldset><legend><span class="en">Rules</span>試合ルール</legend>'+
-        '<div class="field"><span class="lbl">1ゲームの点数</span>'+seg("pmode",[["15","15点"],["free","フリー"]],M.points===15?"15":"free")+'</div>'+
-        '<div class="only-free">'+inp("f-pfree","点数（フリー）",M.points===15?21:M.points,"number","例：21、30")+'</div>'+
+        '<div class="field"><span class="lbl">1ゲームの点数</span>'+seg("pmode",[["15","15点"],["21","21点"],["free","フリー"]],pmodeOf(M.points))+'</div>'+
+        '<div class="only-free">'+inp("f-pfree","点数（フリー）",pmodeOf(M.points)==="free"?M.points:"","number","例：11、30")+'</div>'+
         '<div class="field"><span class="lbl">延長</span>'+seg("deuce",[["1","あり<br><small>2点差がつくまで</small>"],["0","なし<br><small>先に規定点で終了</small>"]],M.deuce?"1":"0")+'</div>'+
         '<div class="only-deuce">'+inp("f-cap","上限点（空欄なら上限なし）",M.cap||"","number","例：30")+'</div>'+
         '<div class="field"><span class="lbl">ゲーム数</span>'+seg("games",[["3","3ゲーム<br><small>2ゲーム先取</small>"],["1","1ゲーム"]],M.games)+'</div>'+
@@ -552,6 +552,7 @@ function showSug(k, q){
   box.hidden = false;
 }
 function hideSugExcept(k){ Object.keys(SUG).forEach(function(j){ var b=$("#"+j+"-sug"); if (b && j!==k) b.hidden = true; }); }
+function pmodeOf(p){ return p===15 ? "15" : (p===21 ? "21" : "free"); } /* 1ゲームの点数：15点／21点／フリー */
 function val(id){ var el=$("#"+id); return el ? el.value.trim() : ""; }
 function radio(n){ var el=document.querySelector('input[name="'+n+'"]:checked'); return el ? el.value : null; }
 function submitSetup(m, locked){
@@ -562,6 +563,7 @@ function submitSetup(m, locked){
     points: 15, deuce: radio("deuce") !== "0", cap: null, games: +(radio("games")||3),
     recorder: val("f-rec"), note: $("#f-note") ? $("#f-note").value : ""
   };
+  if (radio("pmode") === "21") meta.points = 21;
   if (radio("pmode") === "free"){ var p = parseInt(val("f-pfree"),10); meta.points = p > 0 && p < 100 ? p : 21; }
   if (meta.deuce){ var c = parseInt(val("f-cap"),10); meta.cap = c > meta.points && c < 100 ? c : null; }
   if (meta.type === "S"){ meta.a.names[1] = ""; meta.b.names[1] = ""; }
