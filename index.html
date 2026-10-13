@@ -4,7 +4,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Rubik:wght@500;600;700;800;900&family=Zen+Maru+Gothic:wght@400;500;700;900&display=swap">
 <style>
-/* Layout: "SCOREBOARD" white (案C白, V29; mobile hardening V33; standalone web V34; name/team suggestions V35; 21-point option V36; 21pt cap 30 V37; wordmark fits CTA width V38; club byline V39; byline pink V40; 2-game format + rule order V41; prepare matches before play V42; POP poster redesign + bouncing title V43; rally line removed V44; byline team name in ink V45; sticker deeper pink + white text V46; title period in logo pink V47; centred plus icon V48; calmer MATCHES heading V49; shuttle O tried V52-53 then back to the two-tone dot V54; rougher hand-made dot V55; page labels match MATCHES V56; lighter page headings V57; card labels in the same face V57; one type system everywhere V58) — white ground, flat light-grey cards, rounded-rect controls; bright teal (A / primary) and bright pink (B) from the club logo; score mode = two deep-tinted panels with numbers in logo teal / deep pink. The printed sheet stays white paper. */
+/* Layout: "SCOREBOARD" white (案C白, V29; mobile hardening V33; standalone web V34; name/team suggestions V35; 21-point option V36; 21pt cap 30 V37; wordmark fits CTA width V38; club byline V39; byline pink V40; 2-game format + rule order V41; prepare matches before play V42; POP poster redesign + bouncing title V43; rally line removed V44; byline team name in ink V45; sticker deeper pink + white text V46; title period in logo pink V47; centred plus icon V48; calmer MATCHES heading V49; shuttle O tried V52-53 then back to the two-tone dot V54; rougher hand-made dot V55; page labels match MATCHES V56; lighter page headings V57; card labels in the same face V57; one type system everywhere V58; white text on the pink opponent card V59) — white ground, flat light-grey cards, rounded-rect controls; bright teal (A / primary) and bright pink (B) from the club logo; score mode = two deep-tinted panels with numbers in logo teal / deep pink. The printed sheet stays white paper. */
 :root{
   --bg:#FFFFFF; --surface:#F1F6F6; --field:#FFFFFF; --ink:#142625; --muted:#5E7372; --line:#DCE7E6;
   --teal:#058687; --on-teal:#FFFFFF; --teal-tint:#DCEEEE; --teal-ink:#046A6B;
@@ -127,7 +127,10 @@ form{display:flex;flex-direction:column;gap:12px}
 fieldset{border:0;margin:0;padding:18px 16px;display:flex;flex-direction:column;gap:14px;min-width:0;background:var(--surface);border-radius:var(--r)}
 legend{float:left;width:100%;font-size:16px;font-weight:700;margin:0;padding:0;letter-spacing:.04em;display:flex;flex-direction:column;gap:0}
 legend .en{color:var(--ink)} legend .en.a{color:var(--teal-ink)} legend .en.b{color:var(--pink-ink)}
-fieldset.player.a{background:var(--teal-tint)} fieldset.player.b{background:var(--pink-tint)}
+fieldset.player.a{background:var(--teal-tint)} fieldset.player.b{background:var(--pink)}
+/* V59: the pink opponent card carries white text (inputs stay white with dark text) */
+fieldset.player.b,fieldset.player.b legend .en.b,fieldset.player.b .field label{color:#FFFFFF}
+fieldset.player.b input,fieldset.player.b .sug{color:var(--ink)}
 legend+*{clear:both}
 .field{display:flex;flex-direction:column;gap:6px;min-width:0}
 .field label,.lbl{font-size:13px;font-weight:700;color:var(--muted)}
