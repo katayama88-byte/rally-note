@@ -4,7 +4,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Rubik:wght@500;600;700;800;900&family=Zen+Maru+Gothic:wght@400;500;700;900&display=swap">
 <style>
-/* Layout: "SCOREBOARD" white (案C白, V29; mobile hardening V33; standalone web V34; name/team suggestions V35; 21-point option V36; 21pt cap 30 V37; wordmark fits CTA width V38; club byline V39; byline pink V40; 2-game format + rule order V41; prepare matches before play V42; POP poster redesign + bouncing title V43; rally line removed V44) — white ground, flat light-grey cards, rounded-rect controls; bright teal (A / primary) and bright pink (B) from the club logo; score mode = two deep-tinted panels with numbers in logo teal / deep pink. The printed sheet stays white paper. */
+/* Layout: "SCOREBOARD" white (案C白, V29; mobile hardening V33; standalone web V34; name/team suggestions V35; 21-point option V36; 21pt cap 30 V37; wordmark fits CTA width V38; club byline V39; byline pink V40; 2-game format + rule order V41; prepare matches before play V42; POP poster redesign + bouncing title V43; rally line removed V44; byline team name in ink V45) — white ground, flat light-grey cards, rounded-rect controls; bright teal (A / primary) and bright pink (B) from the club logo; score mode = two deep-tinted panels with numbers in logo teal / deep pink. The printed sheet stays white paper. */
 :root{
   --bg:#FFFFFF; --surface:#F1F6F6; --field:#FFFFFF; --ink:#142625; --muted:#5E7372; --line:#DCE7E6;
   --teal:#058687; --on-teal:#FFFFFF; --teal-tint:#DCEEEE; --teal-ink:#046A6B;
@@ -55,7 +55,7 @@ h2.sec .en{font-size:24px;letter-spacing:.02em;color:var(--ink)}
 .wordmark .pd{color:var(--pink-soft)}
 .wordmark .dot{display:inline-block;width:.7em;height:.7em;border-radius:50%;margin:0 .04em;background:linear-gradient(var(--pink-dot) 0 46%,transparent 46% 54%,#FFFFFF 54% 100%)}
 .byline{margin:0;align-self:flex-end;font-family:var(--font-num);font-weight:700;font-size:12px;letter-spacing:.12em;color:var(--muted);white-space:nowrap}
-.byline b{font-weight:800;color:var(--pink)}
+.byline b{font-weight:800;color:var(--ink)}
 /* opening animation (V43): letters drop in and bounce, then the sticker pops */
 .hero.intro .wordmark .ch,.hero.intro .sticker{opacity:0}
 .hero.play .wordmark .ch{animation:rn-drop 1s both;animation-delay:calc(var(--i) * 65ms)}
