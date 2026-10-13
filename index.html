@@ -4,7 +4,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Rubik:wght@500;600;700;800;900&family=Zen+Maru+Gothic:wght@400;500;700;900&display=swap">
 <style>
-/* Layout: "SCOREBOARD" white (案C白, V29; mobile hardening V33; standalone web V34; name/team suggestions V35; 21-point option V36; 21pt cap 30 V37; wordmark fits CTA width V38; club byline V39; byline pink V40; 2-game format + rule order V41; prepare matches before play V42; POP poster redesign + bouncing title V43; rally line removed V44; byline team name in ink V45; sticker deeper pink + white text V46; title period in logo pink V47; centred plus icon V48; calmer MATCHES heading V49; shuttle O tried V52-53 then back to the two-tone dot V54; rougher hand-made dot V55; page labels match MATCHES V56; lighter page headings V57; card labels in the same face V57; one type system everywhere V58) — white ground, flat light-grey cards, rounded-rect controls; bright teal (A / primary) and bright pink (B) from the club logo; score mode = two deep-tinted panels with numbers in logo teal / deep pink. The printed sheet stays white paper. */
+/* Layout: "SCOREBOARD" white (案C白, V29; mobile hardening V33; standalone web V34; name/team suggestions V35; 21-point option V36; 21pt cap 30 V37; wordmark fits CTA width V38; club byline V39; byline pink V40; 2-game format + rule order V41; prepare matches before play V42; POP poster redesign + bouncing title V43; rally line removed V44; byline team name in ink V45; sticker deeper pink + white text V46; title period in logo pink V47; centred plus icon V48; calmer MATCHES heading V49; shuttle O tried V52-53 then back to the two-tone dot V54; rougher hand-made dot V55; page labels match MATCHES V56; lighter page headings V57; card labels in the same face V57; one type system everywhere V58; pink prepare button with white text V61) — white ground, flat light-grey cards, rounded-rect controls; bright teal (A / primary) and bright pink (B) from the club logo; score mode = two deep-tinted panels with numbers in logo teal / deep pink. The printed sheet stays white paper. */
 :root{
   --bg:#FFFFFF; --surface:#F1F6F6; --field:#FFFFFF; --ink:#142625; --muted:#5E7372; --line:#DCE7E6;
   --teal:#058687; --on-teal:#FFFFFF; --teal-tint:#DCEEEE; --teal-ink:#046A6B;
@@ -253,6 +253,9 @@ form:not([data-deuce="1"]) .only-deuce{display:none}
 form[data-mode="result"] .only-rally{display:none}
 form:not([data-mode="result"]) .only-result{display:none}
 .btn small{font-weight:500;color:var(--muted);font-size:13px}
+/* V61: 「保存して準備しておく」はピンクの帯に白抜きの文字 */
+.btn[data-act="prep"]{background:var(--pink);color:#FFFFFF}
+.btn[data-act="prep"] small{color:#FFFFFF;opacity:.9}
 a.btn{text-decoration:none;color:var(--ink);box-sizing:border-box}
 .topnav{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:0 8px}
 .back.info{color:var(--teal-ink);background:var(--teal-tint)}
